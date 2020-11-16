@@ -1,16 +1,36 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+from vis_module import *
+from actions_module import *
+WIDTH = 400
+HEIGHT = 600
 
 
-# Press the green button in the gutter to run the script.
+def main():
+    pygame.init()
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    clock = pygame.time.Clock()
+    screen.fill(WHITE)
+    test_cell = FirstCell()
+    test_cells = []
+    test_cells.append(test_cell)
+    FPS = 30
+
+    finished = False
+    while not finished:
+        clock.tick(FPS)
+        time = pygame.time.get_ticks() / 1000
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                finished = True
+
+        multiply(test_cells, time)
+        draw_cells(test_cells, screen)
+        pygame.display.flip()
+
+    pygame.quit()
+
+
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    main()
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
