@@ -1,5 +1,5 @@
 import random
-from cells_classes_mobule import *
+from cells_classes_module import *
 import numpy as np
 time_multiply = 2
 
