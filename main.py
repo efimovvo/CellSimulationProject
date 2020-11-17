@@ -1,7 +1,7 @@
 from vis_module import *
 from actions_module import *
 from cells_classes_module import *
-import pygame
+
 
 
 WIDTH = 600
