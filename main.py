@@ -1,20 +1,19 @@
 from vis_module import *
 from actions_module import *
 from cells_classes_module import *
-WIDTH = 400
+WIDTH = 600
 HEIGHT = 600
+test_cell = FirstCell()  # first cells
+test_cells = [test_cell]
 
 
 def main():
+    """Main function of program. It creates a screen where cells lives and makes an actions with them"""
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
     screen.fill(WHITE)
-    test_cell = FirstCell()
-    test_cells = []
-    test_cells.append(test_cell)
     FPS = 30
-
     finished = False
     while not finished:
         clock.tick(FPS)
@@ -33,5 +32,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
