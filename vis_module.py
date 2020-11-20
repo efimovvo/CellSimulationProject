@@ -12,9 +12,10 @@ def draw_cells(list_cells, surf):
     """
     :arg    list_cells - list of cells, list
             surf - surface where cells will be drawn
+            color - color of cells, type : tuple
 
     Function draws a cells on the surface."""
     surf.fill(WHITE)
     for cell in list_cells:
-        pygame.draw.circle(surf, RED, cell.center, cell.r)
+        pygame.draw.circle(surf, cell.color, cell.center, cell.r)
         pygame.draw.circle(surf, BLACK, cell.center, cell.r, 1)
