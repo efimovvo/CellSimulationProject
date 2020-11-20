@@ -1,13 +1,18 @@
 from vis_module import *
 from actions_module import *
 from cells_classes_module import *
-
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
 
 
 WIDTH = 600
 HEIGHT = 600
 test_cell = FirstCell()  # first cells
-test_cells = [test_cell]
+predator = Predator()  # first predator
+test_cells = [test_cell, predator]
 
 
 def main():
@@ -15,10 +20,10 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
-    screen.fill(WHITE)
-    FPS = 30
+    FPS = 100
     finished = False
     while not finished:
+        screen.fill(WHITE)
         clock.tick(FPS)
         time = pygame.time.get_ticks() / 1000
 
@@ -27,6 +32,8 @@ def main():
                 finished = True
 
         multiply(test_cells, time)
+        update(test_cells)
+        predator_attack(test_cells, time)
         draw_cells(test_cells, screen)
         pygame.display.flip()
 
