@@ -12,13 +12,18 @@ BLUE = (0, 0, 255)
 
 WIDTH = 600
 HEIGHT = 600
-test_cell = FirstCell()  # first cells
-predator = Predator()  # first predator
+
+
+test_cell = Cell()
+predator = Cell()
+meal_list = [Meal()]
 test_cells = [test_cell, predator]
 
 
 def main():
     """Main function of program. It creates a screen where cells lives and makes an actions with them"""
+    global meal_list
+
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
@@ -33,10 +38,12 @@ def main():
             if event.type == pygame.QUIT:
                 finished = True
 
-        multiply(test_cells, time)
+        if len(meal_list) < 10:
+            meal_list.append(Meal())
+
         update(test_cells)
-        predator_attack(test_cells, time)
         draw_cells(test_cells, screen)
+        draw_meal(meal_list, screen)
         pygame.display.flip()
 
     pygame.quit()

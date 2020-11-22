@@ -58,11 +58,11 @@ def update(list_cells):
 
     for cell in list_cells:
         cell.update()
-        if cell.vx == 0 and cell.vy == 0:  # stop neighbors next to staying cells
+        if cell.velocity[0] == 0 and cell.velocity[1] == 0:  # stop neighbors next to staying cells
             for neighbor in list_cells:
-                if (cell.center[0] - neighbor.center[0]) ** 2 + (cell.center[1] - neighbor.center[1]) ** 2 < (
-                        2 * cell.r) ** 2:
-                    neighbor.vx = neighbor.vy = 0
+                if (cell.position[0] - neighbor.position[0]) ** 2 + (cell.position[1] - neighbor.position[1]) ** 2 < (
+                        2 * cell.size) ** 2:
+                    neighbor.velocity[0] = neighbor.velocity[1] = 0
 
 
 def zombie_cell(peaceful_cell, predator, t):

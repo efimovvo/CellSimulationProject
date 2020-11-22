@@ -1,4 +1,6 @@
 import pygame
+
+
 WIDTH = 600
 HEIGHT = 600
 WHITE = (255, 255, 255)
@@ -17,5 +19,16 @@ def draw_cells(list_cells, surf):
     Function draws a cells on the surface."""
     surf.fill(WHITE)
     for cell in list_cells:
-        pygame.draw.circle(surf, cell.color, cell.center, cell.r)
-        pygame.draw.circle(surf, BLACK, cell.center, cell.r, 1)
+        pygame.draw.circle(surf, cell.color, cell.position, cell.size)
+        pygame.draw.circle(surf, BLACK, cell.position, cell.size, 1)
+
+
+def draw_meal(meal_list, surf):
+    """ Function draws a meal on the surface.
+    :arg
+    ---
+        meal: list - list of meal
+        surf - surface where cells will be drawn
+    """
+    for meal in meal_list:
+        pygame.draw.circle(surf, BLACK, meal.position, 3)
