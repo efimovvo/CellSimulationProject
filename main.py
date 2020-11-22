@@ -1,6 +1,8 @@
 from vis_module import *
 from actions_module import *
 from cells_classes_module import *
+
+
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
