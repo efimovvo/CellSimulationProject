@@ -31,4 +31,5 @@ def draw_meal(meal_list, surf):
         surf - surface where cells will be drawn
     """
     for meal in meal_list:
-        pygame.draw.circle(surf, BLACK, meal.position, 3)
+        if meal != 0:
+            pygame.draw.circle(surf, BLACK, meal.position, meal.size)
