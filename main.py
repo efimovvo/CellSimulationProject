@@ -16,6 +16,7 @@ HEIGHT = 600
 
 test_cell = Cell()
 predator = Cell()
+predator.position = [WIDTH//3, HEIGHT//3]
 meal_list = [Meal()]
 test_cells = [test_cell, predator]
 
@@ -40,8 +41,8 @@ def main():
 
         if len(meal_list) < 10:
             meal_list.append(Meal())
-
-        update(test_cells)
+        multiply(test_cells, time)
+        update(test_cells, meal_list)
         draw_cells(test_cells, screen)
         draw_meal(meal_list, screen)
         pygame.display.flip()
