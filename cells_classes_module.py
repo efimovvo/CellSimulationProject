@@ -56,12 +56,12 @@ class Cell:
         self.age = 0
         self.size = 5
         self.position = [SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2]
-        self.velocity = [5, 5]
+        self.velocity = [1, 1]
         # Genetic code
         self.shell_thickness = 0.5
         self.satiety = 1  # сытость
-        self.satiety_step = 0.002
-        self.engines = random.randint(1, 3)
+        self.satiety_step = 0.003
+        self.engines = random.randint(4, 6)
         self.reproductive_age = [20, 50]
         self.age_step = 0.05
         self.age_of_last_multiplication = 0
