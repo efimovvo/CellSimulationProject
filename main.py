@@ -3,22 +3,11 @@ from actions_module import *
 from cells_classes_module import *
 
 
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
-
-
-WIDTH = 600
-HEIGHT = 600
-
-
-test_cell = Cell()
-predator = Cell()
-predator.position = [WIDTH // 3, HEIGHT // 3]
+cell_1 = Cell()
+cell_2 = Cell()
+cell_2.position = [SCREEN_WIDTH // 3, SCREEN_HEIGHT // 3]
 meal_list = [Meal()]
-test_cells = [test_cell, predator]
+cells = [cell_1, cell_2]
 
 
 def main():
@@ -31,20 +20,31 @@ def main():
     FPS = 100
     finished = False
     while not finished:
-        screen.fill(WHITE)
+        clean_screen(screen)
         clock.tick(FPS)
-        time = pygame.time.get_ticks() / 1000
 
+        # Check the users actions
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 finished = True
 
-        if len(meal_list) < 50:
+        # Update all date for one time step
+        if len(meal_list) < 15:
             meal_list.append(Meal())
-        multiply(test_cells)
-        update(test_cells, meal_list)
-        draw_cells(test_cells, screen)
+        multiply(cells)
+        update(cells, meal_list)
+
+        # Draw all
+        # Draw the meal on the screen
         draw_meal(meal_list, screen)
+        # Draw the cells on the screen
+        draw_cells(cells, screen)
+
+        # Draw interface objects
+        draw_user_panel(screen)
+        # Draw population data
+        draw_plot(screen)
+        # Update the screen
         pygame.display.flip()
 
     pygame.quit()

@@ -42,13 +42,14 @@ def update(list_cells, meal_list):
         cell.food_search(meal_list)
         cell.update()
         cell.age += cell.age_step
-        cell.satiety -= 0.005
+        cell.satiety -= cell.satiety_step
 
     for meal in meal_list:
         ind = False
         for cell in list_cells:
             if meal.eaten(cell):
                 cell.satiety += meal.richness
+                cell.satiety = min(cell.satiety, 1)
                 meal_list.remove(meal)
                 ind = True
                 break
