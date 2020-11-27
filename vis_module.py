@@ -15,10 +15,12 @@ HEIGHT = PANEL_HEIGHT + SCREEN_HEIGHT
 
 # Color set
 WHITE = (255, 255, 255)
+DARK_GREY = (102, 102, 102)
+LIGHT_GREY = (204, 204, 204)
 BLACK = (0, 0, 0)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
+RED = (204, 0, 0)
+GREEN = (0, 204, 0)
+BLUE = (0, 0, 204)
 
 
 def clean_screen(surf):
@@ -26,11 +28,19 @@ def clean_screen(surf):
 
 
 def draw_user_panel(surf):
-    pass
+    pygame.draw.rect(
+        surf,
+        LIGHT_GREY,
+        [0, 0, WIDTH, PANEL_HEIGHT]
+    )
 
 
 def draw_plot(surf):
-    pass
+    pygame.draw.rect(
+        surf,
+        DARK_GREY,
+        [SCREEN_WIDTH, PANEL_HEIGHT, PLOT_AREA_WIDTH, SCREEN_HEIGHT]
+    )
 
 
 def draw_cells(list_cells, surf):
@@ -43,8 +53,19 @@ def draw_cells(list_cells, surf):
     for cell in list_cells:
         position = [cell.position[0], cell.position[1] + PANEL_HEIGHT]
 
-        pygame.draw.circle(surf, cell.color, position, cell.size)
-        pygame.draw.circle(surf, cell.border_color, position, cell.size, cell.border_thickness)
+        pygame.draw.circle(
+            surf,
+            cell.color,
+            position,
+            cell.size
+        )
+        pygame.draw.circle(
+            surf,
+            cell.border_color,
+            position,
+            cell.size,
+            cell.border_thickness
+        )
 
 
 def draw_meal(meal_list, surf):
