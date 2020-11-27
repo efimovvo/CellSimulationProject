@@ -18,8 +18,8 @@ def find_area(cell, list_meal):
     vec_area = [0, 0]
     for meal in list_meal:
         r = find_vector(cell, meal)
-        vec_area[0] += (r[0] / vec_module(r)**2) * 100
-        vec_area[1] += (r[1] / vec_module(r)**2) * 100
+        vec_area[0] += (r[0] / vec_module(r)**3) * 100
+        vec_area[1] += (r[1] / vec_module(r)**3) * 100
     vec_area[0] /= vec_module(vec_area)
     vec_area[1] /= vec_module(vec_area)
     vec_area[0] *= cell.engines
@@ -58,8 +58,9 @@ class Cell:
         self.shell_thickness = 0.5
         self.satiety = 1  # сытость
         self.engines = 1
-        self.reproductive_age = [1, 100]
-        self.age_step = 0.005
+        self.reproductive_age = [20, 50]
+        self.age_step = 0.05
+        self.age_of_last_multiplication = 0
         self.reproductive_waiting = 2
         self.aggressiveness = 0
         self.friendliness = 0
@@ -93,7 +94,7 @@ class Cell:
         x = self.position[0] + 2 * self.size * np.cos(phi)  # x cor of center new cell
         y = self.position[1] + 2 * self.size * np.sin(phi)  # y cor of center new cell
 
-        for cell in list_cells:  # do not spawn near to each oher
+        for cell in list_cells:  # do not spawn near to each other
             vec = [cell.position[0] - x, cell.position[1] - y]
             module_vec = vec_module(vec)
             if module_vec <= 2 * self.size:
@@ -105,9 +106,6 @@ class Cell:
             return new_cell
         else:
             return 0
-
-    def die(self):
-        pass
 
 
 class Meal:

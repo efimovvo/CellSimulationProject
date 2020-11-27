@@ -16,7 +16,7 @@ HEIGHT = 600
 
 test_cell = Cell()
 predator = Cell()
-predator.position = [WIDTH//3, HEIGHT//3]
+predator.position = [WIDTH // 3, HEIGHT // 3]
 meal_list = [Meal()]
 test_cells = [test_cell, predator]
 
@@ -39,9 +39,9 @@ def main():
             if event.type == pygame.QUIT:
                 finished = True
 
-        if len(meal_list) < 10:
+        if len(meal_list) < 50:
             meal_list.append(Meal())
-        multiply(test_cells, time)
+        multiply(test_cells)
         update(test_cells, meal_list)
         draw_cells(test_cells, screen)
         draw_meal(meal_list, screen)

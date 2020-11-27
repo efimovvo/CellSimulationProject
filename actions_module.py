@@ -9,20 +9,29 @@ def probability_to_multiply():
     return random.uniform(0, 1)
 
 
+def kill_the_cell(list_cell, cell):
+    list_cell.remove(cell)
 
-def multiply(list_cells, t):
+
+def born_the_cell(list_cell, cell):
+    list_cell.append(cell)
+
+
+def multiply(list_cells):
     """:arg:    list_cells - list of cells, type : list
-                t - time from begin simulation, type : float"""
+                time - time from begin simulation, type : float"""
     for cell in list_cells:
         p = probability_to_multiply()
-        cell.age += cell.age_step
-        print(cell.age)
-        if p > cell.multiply_skill and cell.reproductive_age[0] <= cell.age <= cell.reproductive_age[1] and (
-            t - cell.age > cell.reproductive_waiting
+        if cell.age >= 100 or cell.satiety <= 0:
+            kill_the_cell(list_cells, cell)
+        if (p > cell.multiply_skill
+                and cell.reproductive_age[0] <= cell.age <= cell.reproductive_age[1]
+                and cell.age - cell.age_of_last_multiplication > cell.reproductive_waiting
+                and cell.satiety >= 0.5
         ):
             new_cell = cell.multiply(list_cells)
             if new_cell != 0:
-                list_cells.append(new_cell)
+                born_the_cell(list_cells, new_cell)
 
 
 def update(list_cells, meal_list):
@@ -32,12 +41,15 @@ def update(list_cells, meal_list):
     for cell in list_cells:
         cell.food_search(meal_list)
         cell.update()
+        cell.age += cell.age_step
+        cell.satiety -= 0.005
 
-    for i in range(len(meal_list)):
+    for meal in meal_list:
         ind = False
         for cell in list_cells:
-            if meal_list[i].eaten(cell):
-                meal_list.pop(i)
+            if meal.eaten(cell):
+                cell.satiety += meal.richness
+                meal_list.remove(meal)
                 ind = True
                 break
         if ind:
