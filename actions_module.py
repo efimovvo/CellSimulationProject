@@ -27,7 +27,7 @@ def multiply(list_cells):
         if (p > cell.multiply_skill
                 and cell.reproductive_age[0] <= cell.age <= cell.reproductive_age[1]
                 and cell.age - cell.age_of_last_multiplication > cell.reproductive_waiting
-                and cell.satiety >= 0.5
+                and cell.satiety >= 0.3
         ):
             new_cell = cell.multiply(list_cells)
             if new_cell != 0:
@@ -39,7 +39,7 @@ def update(list_cells, meal_list):
 
         Function updates cells positions. """
     for cell in list_cells:
-        cell.food_search(meal_list)
+        cell.calc_forces(meal_list, list_cells)
         cell.update()
         cell.age += cell.age_step
         cell.satiety -= cell.satiety_step

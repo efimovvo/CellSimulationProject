@@ -21,22 +21,26 @@ def find_area(cell, list_meal):
     # Calculating vec_area direction
     for meal in list_meal:
         vector_to_meal = find_vector(cell, meal)
-        vec_area[0] += (vector_to_meal[0] / vec_module(vector_to_meal)**2.5) * 100
-        vec_area[1] += (vector_to_meal[1] / vec_module(vector_to_meal)**2.5) * 100
+        vec_area[0] += (vector_to_meal[0] / vec_module(vector_to_meal)**3)
+        vec_area[1] += (vector_to_meal[1] / vec_module(vector_to_meal)**3)
 
     # Normalization of vec_area
-    vec_area[0] /= vec_module(vec_area)
-    vec_area[1] /= vec_module(vec_area)
-    print(vec_area)
+    vec_area[0], vec_area[1] = vec_area[0] / vec_module(vec_area), vec_area[1] / vec_module(vec_area)
     vec_area[0] *= cell.engines
     vec_area[1] *= cell.engines
-    print(vec_area)
 
     return vec_area
 
 
+def find_force(vector):
+    force = vector / (vec_module(vector) / 5)**10
+    if vec_module(force) > 10:
+        force = 10
+    return force
+
+
 class Cell:
-    '''Common class for all cells
+    """Common class for all cells
     attributes:
             multiply_skill - skill to multiply, float from 0 (the best) to 1 ( the worst)
             age - float, age of cell
@@ -45,7 +49,7 @@ class Cell:
             velocity - velocity of cell [vx, vy], list
             engines - describe how much cells will be move
             color - Tuple, color of cell
-    '''
+    """
     def __init__(self):
         # Common property
         self.multiply_skill = 0.5
@@ -55,8 +59,8 @@ class Cell:
         self.velocity = [5, 5]
         # Genetic code
         self.shell_thickness = 0.5
-        self.satiety = 0.6  # сытость
-        self.satiety_step = 0.003
+        self.satiety = 1  # сытость
+        self.satiety_step = 0.002
         self.engines = random.randint(1, 3)
         self.reproductive_age = [20, 50]
         self.age_step = 0.05
@@ -69,23 +73,33 @@ class Cell:
         self.border_thickness = 1
 
     def update(self):
-        '''Function updates position of cell, it's color, '''
-
+        ''' Function updates position of cell, it's color '''
         self.position[0] += self.velocity[0]
-        self.position[1] += self.velocity[1]  # Решить проблему с убеганием за пределы экрана
+        self.position[1] += self.velocity[1]
         if self.position[0] >= SCREEN_WIDTH or self.position[0] <= 0:
             self.velocity[0] *= -1
         if self.position[1] >= SCREEN_HEIGHT or self.position[1] <= 0:
             self.velocity[1] *= -1
 
-    def food_search(self, list_meal):
-        ''' Function calculates the main food direction for cell
-
-        '''
-
+    def calc_forces(self, list_meal, list_cells):
+        # Calculating force of entire engine
+        # Get direction vector to meal
         vec_area = find_area(self, list_meal)
-        self.velocity[0] = vec_area[0]
-        self.velocity[1] = vec_area[1]
+        acceleration = np.array(vec_area)
+
+        # Calculating force of viscosity
+        viscosity = 0.5
+        acceleration -= viscosity * np.array(self.velocity)
+
+        # Calculating force of cell to cell interaction
+        for cell in list_cells:
+            if self != cell:
+                vector_to_cell = find_vector(self, cell)
+                if vec_module(vector_to_cell) <= 1 * self.size:
+                    acceleration -= find_force(np.array(vector_to_cell))
+
+        self.velocity[0] += acceleration[0]
+        self.velocity[1] += acceleration[1]
 
     def multiply(self, list_cells):
         """:arg     list_cells - list of cells"""
@@ -104,6 +118,7 @@ class Cell:
                 break
         if spawn:
             new_cell.position = [int(x), int(y)]
+            self.setiety, new_cell.satiety = self.satiety / 2, self.satiety / 2
 
             return new_cell
         else:
@@ -118,6 +133,3 @@ class Meal:
 
     def eaten(self, cell):
         return vec_module(find_vector(self, cell)) <= self.size + cell.size
-
-
-

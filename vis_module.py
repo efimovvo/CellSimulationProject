@@ -24,7 +24,7 @@ BLUE = (0, 0, 204)
 
 
 def clean_screen(surf):
-    surf.fill(BLACK)
+    surf.fill(DARK_GREY)
 
 
 def draw_user_panel(surf):
