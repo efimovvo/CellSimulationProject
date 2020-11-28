@@ -5,9 +5,13 @@ from cells_classes_module import *
 
 cell_1 = Cell()
 cell_2 = Cell()
+cell_3 = Cell()
+cell_3.predator = True
+cell_3.color = RED
 cell_2.position = [SCREEN_WIDTH // 3, SCREEN_HEIGHT // 3]
 meal_list = [Meal()]
-cells = [cell_1, cell_2]
+cells = [cell_1, cell_2, cell_3]
+
 
 
 def main():
