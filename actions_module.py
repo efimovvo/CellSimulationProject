@@ -10,7 +10,8 @@ def probability_to_multiply():
 
 
 def kill_the_cell(list_cell, cell):
-    list_cell.remove(cell)
+    if cell in list_cell:
+        list_cell.remove(cell)
 
 
 def born_the_cell(list_cell, cell):
@@ -38,18 +39,28 @@ def update(list_cells, meal_list):
     """:arg    list_cells - list of cells, type : list
 
         Function updates cells positions. """
+    victim_list = [cell for cell in list_cells if not cell.predator]
     for cell in list_cells:
         cell.calc_forces(meal_list, list_cells)
         cell.update()
+        if cell.predator:
+            if len(victim_list) != 0:
+                for victim in victim_list:
+                    if vec_module(find_vector(cell, victim)) <= victim.size:
+                        kill_the_cell(list_cells, victim)
+                        cell.satiety += 0.5
+                        cell.satiety = min(cell.satiety, 1)
         cell.age += cell.age_step
         cell.satiety -= cell.satiety_step
+
 
     for meal in meal_list:
         ind = False
         for cell in list_cells:
             if meal.eaten(cell):
-                cell.satiety += meal.richness
-                cell.satiety = min(cell.satiety, 1)
+                if not cell.predator:
+                    cell.satiety += meal.richness
+                    cell.satiety = min(cell.satiety, 1)
                 meal_list.remove(meal)
                 ind = True
                 break
