@@ -48,7 +48,7 @@ def update(list_cells, meal_list):
                 for victim in victim_list:
                     if vec_module(find_vector(cell, victim)) <= victim.size:
                         kill_the_cell(list_cells, victim)
-                        cell.satiety += 0.5
+                        cell.satiety += victim.richness
                         cell.satiety = min(cell.satiety, 1)
         cell.age += cell.age_step
         cell.satiety -= cell.satiety_step
