@@ -20,6 +20,7 @@ def find_area(cell, list_meal):
     vec_area = [0.0, 0.0]
     # Calculating vec_area direction
     for meal in list_meal:
+
         vector_to_meal = find_vector(cell, meal)
         vec_area[0] += (vector_to_meal[0] / vec_module(vector_to_meal)**3)
         vec_area[1] += (vector_to_meal[1] / vec_module(vector_to_meal)**3)
@@ -55,15 +56,15 @@ class Cell:
         self.multiply_skill = 0.5
         self.age = 0
         self.size = 5
-        self.position = [SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2]
+        self.position = [SCREEN_WIDTH / 2 * random.uniform(0, 1), SCREEN_HEIGHT / 2 * random.uniform(0, 1)]
         self.velocity = [1, 1]
         # Genetic code
         self.shell_thickness = 0.5
         self.satiety = 1  # сытость
         self.satiety_step = 0.003
-        self.engines = random.randint(4, 6)
-        self.reproductive_age = [20, 50]
-        self.age_step = 0.05
+        self.engines = 1
+        self.reproductive_age = [5, 50]
+        self.age_step = 0.03
         self.age_of_last_multiplication = 0
         self.reproductive_waiting = 2
         self.aggressiveness = 0
@@ -71,6 +72,8 @@ class Cell:
         self.color = GREEN  # Заменить постоянный цвет на зависимый
         self.border_color = WHITE
         self.border_thickness = 1
+        self.predator = False
+        self.richness = random.uniform(0, 1)
 
     def update(self):
         ''' Function updates position of cell, it's color '''
@@ -84,9 +87,14 @@ class Cell:
     def calc_forces(self, list_meal, list_cells):
         # Calculating force of entire engine
         # Get direction vector to meal
-        vec_area = find_area(self, list_meal)
+        list_victim = [cell for cell in list_cells if not cell.predator]
+        if not self.predator:
+            vec_area = find_area(self, list_meal)
+        elif len(list_victim) != 0:
+            vec_area = find_area(self, list_victim)
+        else:
+            vec_area = find_area(self, list_meal)
         acceleration = np.array(vec_area)
-
         # Calculating force of viscosity
         viscosity = 0.5
         acceleration -= viscosity * np.array(self.velocity)
@@ -106,6 +114,9 @@ class Cell:
         global spawn  # variable to spawn
         spawn = True
         new_cell = Cell()
+        if self.predator:
+            new_cell.predator = True
+            new_cell.color = RED
         phi = random.uniform(0, 2 * np.pi)  # random phi
         x = self.position[0] + 2 * self.size * np.cos(phi)  # x cor of center new cell
         y = self.position[1] + 2 * self.size * np.sin(phi)  # y cor of center new cell
@@ -119,7 +130,6 @@ class Cell:
         if spawn:
             new_cell.position = [int(x), int(y)]
             self.setiety, new_cell.satiety = self.satiety / 2, self.satiety / 2
-
             return new_cell
         else:
             return 0
