@@ -50,9 +50,9 @@ def update(list_cells, meal_list):
                         kill_the_cell(list_cells, victim)
                         cell.satiety += victim.richness
                         cell.satiety = min(cell.satiety, 1)
+
         cell.age += cell.age_step
         cell.satiety -= cell.satiety_step
-
 
     for meal in meal_list:
         ind = False
