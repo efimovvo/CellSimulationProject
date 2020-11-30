@@ -39,7 +39,7 @@ def add_predator(pos, list_cell):
 def main():
     """Main function of program. It creates a screen where cells lives and makes an actions with them"""
     global meal_list
-
+    dt = 0
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     screen.set_alpha(None)
@@ -47,9 +47,9 @@ def main():
     FPS = 100
     finished = False
     while not finished:
+        dt += 1
         clean_screen(screen)
         clock.tick(FPS)
-        print(clock.get_fps())
         # Check the users actions
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -63,8 +63,8 @@ def main():
         # Update all date for one time step
         if len(meal_list) < 15:
             meal_list.append(Meal())
-        multiply(cells)
-        update(cells, meal_list)
+        multiply(cells, dt)
+        update(cells, meal_list, dt)
 
         # Draw all
         # Draw the meal on the screen
@@ -75,12 +75,14 @@ def main():
         # Draw interface objects
         draw_user_panel(screen)
         # Draw population data
-        draw_plot(screen)
+        graph(screen)
+        #draw_plot(screen)
         # Update the screen
         pygame.display.flip()
 
     pygame.quit()
 
-
 if __name__ == '__main__':
     main()
+    file = open('data.txt', 'w')
+    file.close()

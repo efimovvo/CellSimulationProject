@@ -9,22 +9,24 @@ def probability_to_multiply():
     return random.uniform(0, 1)
 
 
-def kill_the_cell(list_cell, cell):
+def kill_the_cell(list_cell, cell, dt):
     if cell in list_cell:
         list_cell.remove(cell)
+        data(list_cell, dt)
 
 
-def born_the_cell(list_cell, cell):
+def born_the_cell(list_cell, cell, dt):
     list_cell.append(cell)
+    data(list_cell, dt)
 
 
-def multiply(list_cells):
+def multiply(list_cells, dt):
     """:arg:    list_cells - list of cells, type : list
                 time - time from begin simulation, type : float"""
     for cell in list_cells:
         p = probability_to_multiply()
         if cell.age >= 100 or cell.satiety <= 0:
-            kill_the_cell(list_cells, cell)
+            kill_the_cell(list_cells, cell, dt)
         if (p > cell.multiply_skill
                 and cell.reproductive_age[0] <= cell.age <= cell.reproductive_age[1]
                 and cell.age - cell.age_of_last_multiplication > cell.reproductive_waiting
@@ -32,10 +34,10 @@ def multiply(list_cells):
         ):
             new_cell = cell.multiply(list_cells)
             if new_cell != 0:
-                born_the_cell(list_cells, new_cell)
+                born_the_cell(list_cells, new_cell, dt)
 
 
-def update(list_cells, meal_list):
+def update(list_cells, meal_list, dt):
     """:arg    list_cells - list of cells, type : list
 
         Function updates cells positions. """
@@ -47,7 +49,7 @@ def update(list_cells, meal_list):
             if len(victim_list) != 0:
                 for victim in victim_list:
                     if vec_module(find_vector(cell, victim)) <= victim.size:
-                        kill_the_cell(list_cells, victim)
+                        kill_the_cell(list_cells, victim, dt)
                         cell.satiety += victim.richness
                         cell.satiety = min(cell.satiety, 1)
 
