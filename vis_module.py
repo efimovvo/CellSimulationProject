@@ -52,20 +52,35 @@ def draw_cells(list_cells, surf):
     Function draws a cells on the surface."""
     for cell in list_cells:
         position = [cell.position[0], cell.position[1] + PANEL_HEIGHT]
+        '''  Когда будет введена степень агрессии и дружелюбия
+         if cell.aggressiveness - cell.friendliness >= 0:         
+            cell.color = RED
+        elif cell.friendliness - cell.aggressiveness > 0:
+            cell.color = GREEN '''
+        image = pygame.Surface((WIDTH, HEIGHT))
+        image.set_colorkey(BLACK)
+        image.set_alpha(cell.satiety * 255)
+        if cell.age < cell.reproductive_age[0]:
+            cell.border_thickness = -1
+        elif cell.reproductive_age[0] < cell.age < cell.reproductive_age[1]:
+            cell.border_thickness = 1
+        elif cell.age > cell.reproductive_age[1]:
+            cell.border_thickness = 4
 
         pygame.draw.circle(
-            surf,
+            image,
             cell.color,
             position,
             cell.size
         )
         pygame.draw.circle(
-            surf,
+            image,
             cell.border_color,
             position,
             cell.size,
             cell.border_thickness
         )
+        surf.blit(image, (0, 0))
 
 
 def draw_meal(meal_list, surf):
@@ -76,8 +91,8 @@ def draw_meal(meal_list, surf):
         surf - surface where cells will be drawn
     """
     for meal in meal_list:
-        x_min = meal.position[0] - meal.size/2
-        y_min = PANEL_HEIGHT + meal.position[1] - meal.size/2
+        x_min = meal.position[0] - meal.size / 2
+        y_min = PANEL_HEIGHT + meal.position[1] - meal.size / 2
 
         if meal != 0:
             pygame.draw.rect(
