@@ -161,7 +161,7 @@ class Cell:
                 break
         if spawn:
             new_cell.position = np.array([x, y])
-            self.setiety, new_cell.satiety = self.satiety / 2, self.satiety / 2
+            self.satiety, new_cell.satiety = self.satiety / 2, self.satiety / 2
             return new_cell
         else:
             return 0

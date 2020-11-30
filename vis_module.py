@@ -65,7 +65,7 @@ def graph(surf):
     input_data = []
     predators_list = []
     victims_list = []
-    time = []   
+    time = []
     pygame.draw.line(image_axis, BLACK, (0, GRAPH_AREA_WIDTH), (GRAPH_AREA_WIDTH, GRAPH_AREA_WIDTH))
     pygame.draw.line(image_axis, BLACK, (0, 0), (0, GRAPH_AREA_WIDTH))
     pygame.draw.line(image_axis, BLACK, (0, GRAPH_AREA_WIDTH - 1), (GRAPH_AREA_WIDTH - 1, GRAPH_AREA_WIDTH - 1))

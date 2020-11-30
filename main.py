@@ -2,7 +2,6 @@ from vis_module import *
 from actions_module import *
 from cells_classes_module import *
 
-
 cell_1 = Cell()
 cell_1.position = np.array([SCREEN_WIDTH, SCREEN_HEIGHT])
 cell_2 = Cell()
@@ -44,12 +43,12 @@ def main():
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     screen.set_alpha(None)
     clock = pygame.time.Clock()
-    FPS = 100
+    fps = 100
     finished = False
     while not finished:
         dt += 1
         clean_screen(screen)
-        clock.tick(FPS)
+        clock.tick(fps)
         # Check the users actions
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -76,11 +75,11 @@ def main():
         draw_user_panel(screen)
         # Draw population data
         graph(screen)
-        #draw_plot(screen)
         # Update the screen
         pygame.display.flip()
 
     pygame.quit()
+
 
 if __name__ == '__main__':
     main()
