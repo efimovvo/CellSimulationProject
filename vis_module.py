@@ -9,8 +9,10 @@ SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 600
 # Plot area size
 PLOT_AREA_WIDTH = 600
+PLOT_AREA_HEIGHT = 600
 # Graph area size
 GRAPH_AREA_WIDTH = 500
+GRAPH_AREA_HEIGHT = 500
 # Full screen size
 WIDTH = SCREEN_WIDTH + PLOT_AREA_WIDTH
 HEIGHT = PANEL_HEIGHT + SCREEN_HEIGHT
@@ -56,19 +58,18 @@ def data(list_cells, dt):
             file.write(cell_data)
 
 
-
 def graph(surf):
-    image_axis = pygame.Surface((GRAPH_AREA_WIDTH, GRAPH_AREA_WIDTH), pygame.SRCALPHA)
-    image_data = pygame.Surface((GRAPH_AREA_WIDTH, GRAPH_AREA_WIDTH))
+    image_axis = pygame.Surface((GRAPH_AREA_WIDTH, GRAPH_AREA_HEIGHT), pygame.SRCALPHA)
+    image_data = pygame.Surface((GRAPH_AREA_WIDTH, GRAPH_AREA_HEIGHT))
     image_data.set_colorkey(BLACK)
     image_data.set_alpha(255)
     input_data = []
     predators_list = []
     victims_list = []
     time = []
-    pygame.draw.line(image_axis, BLACK, (0, GRAPH_AREA_WIDTH), (GRAPH_AREA_WIDTH, GRAPH_AREA_WIDTH))
-    pygame.draw.line(image_axis, BLACK, (0, 0), (0, GRAPH_AREA_WIDTH))
-    pygame.draw.line(image_axis, BLACK, (0, GRAPH_AREA_WIDTH - 1), (GRAPH_AREA_WIDTH - 1, GRAPH_AREA_WIDTH - 1))
+    pygame.draw.line(image_axis, BLACK, (0, GRAPH_AREA_HEIGHT), (GRAPH_AREA_WIDTH, GRAPH_AREA_HEIGHT))
+    pygame.draw.line(image_axis, BLACK, (0, 0), (0, GRAPH_AREA_HEIGHT))
+    pygame.draw.line(image_axis, BLACK, (0, GRAPH_AREA_HEIGHT - 1), (GRAPH_AREA_WIDTH - 1, GRAPH_AREA_HEIGHT - 1))
     with open('data.txt', 'r') as file:
         for line in file:
             input_data.append(line.split())
@@ -77,10 +78,10 @@ def graph(surf):
         predators_list.append(input_data[i][1])
         time.append(input_data[i][2])
     for i in range(len(input_data) - 1):
-        pygame.draw.line(image_data, GREEN, (int(time[i]) / 20, GRAPH_AREA_WIDTH - 5 * int(victims_list[i]),),
-                         (int(time[i + 1]) / 20, GRAPH_AREA_WIDTH - 5 * int(victims_list[i + 1])))
-        pygame.draw.line(image_data, RED, (int(time[i]) / 20, GRAPH_AREA_WIDTH - 5 * int(predators_list[i]),),
-                         (int(time[i + 1]) / 20, GRAPH_AREA_WIDTH - 5 * int(predators_list[i + 1])))
+        pygame.draw.line(image_data, GREEN, (int(time[i]) / 20, GRAPH_AREA_HEIGHT - 5 * int(victims_list[i]),),
+                         (int(time[i + 1]) / 20, GRAPH_AREA_HEIGHT - 5 * int(victims_list[i + 1])))
+        pygame.draw.line(image_data, RED, (int(time[i]) / 20, GRAPH_AREA_HEIGHT - 5 * int(predators_list[i]),),
+                         (int(time[i + 1]) / 20, GRAPH_AREA_HEIGHT - 5 * int(predators_list[i + 1])))
 
     surf.blit(image_data, (PLOT_AREA_WIDTH, 100))
     surf.blit(image_axis, (PLOT_AREA_WIDTH, 100))
