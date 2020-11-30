@@ -65,8 +65,8 @@ class Cell:
         self.shell_thickness = 0.5
         self.satiety = 1  # сытость
         self.satiety_step = 0.003
-        self.engines = 1
-        self.reproductive_age = [5, 8]
+        self.engines = 0.5 + random.random()
+        self.reproductive_age = [5, 10]
         self.age_step = 0.03
         self.age_of_last_multiplication = 0
         self.reproductive_waiting = 2
@@ -87,18 +87,19 @@ class Cell:
             self.position[0] = SCREEN_WIDTH - (self.position[0] - SCREEN_WIDTH)
             self.velocity[0] *= -1
         elif self.position[0] <= 0:
-            self.position[0] = 2*abs(self.position[0])
+            self.position[0] = abs(self.position[0])
             self.velocity[0] *= -1
 
         if self.position[1] >= SCREEN_HEIGHT:
             self.position[1] = SCREEN_HEIGHT - (self.position[1] - SCREEN_HEIGHT)
             self.velocity[1] *= -1
         elif self.position[1] <= 0:
-            self.position[1] = 2*abs(self.position[1])
+            self.position[1] = abs(self.position[1])
             self.velocity[1] *= -1
 
     def calc_forces(self, list_meal, list_cells):
-        list_victim = [cell for cell in list_cells if not cell.predator and vec_module(find_vector(self, cell)) <= 300]
+        list_victim = [cell for cell in list_cells
+                       if not cell.predator and vec_module(find_vector(self, cell)) <= 200]
         list_predator = [cell for cell in list_cells if cell.predator]
 
         # Calculating force of entire engine
@@ -145,7 +146,9 @@ class Cell:
         if self.predator:
             new_cell.predator = True
             new_cell.color = RED
-            new_cell.engines = 1.2
+            new_cell.engines = 1.4
+            new_cell.satiety_step = 0.005
+            new_cell.reproductive_age = [5, 50]
         phi = random.uniform(0, 2 * np.pi)  # random phi
         x = self.position[0] + 2 * self.size * np.cos(phi)  # x cor of center new cell
         y = self.position[1] + 2 * self.size * np.sin(phi)  # y cor of center new cell

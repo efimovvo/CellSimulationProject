@@ -61,7 +61,7 @@ def main():
                     add_predator([event.pos[0], event.pos[1] - PANEL_HEIGHT], cells)
 
         # Update all date for one time step
-        if len(meal_list) < 15:
+        if len(meal_list) < 50:
             meal_list.append(Meal())
         multiply(cells, dt)
         update(cells, meal_list, dt)
