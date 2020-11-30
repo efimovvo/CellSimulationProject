@@ -55,7 +55,7 @@ class Cell:
     """
     def __init__(self):
         # Common property
-        self.multiply_skill = 0.5
+        self.multiply_skill = 0.8
         self.age = 0
         self.size = 5
         self.position = np.array([SCREEN_WIDTH / 2 * random.uniform(0, 1),
@@ -66,7 +66,7 @@ class Cell:
         self.satiety = 1  # сытость
         self.satiety_step = 0.003
         self.engines = 1
-        self.reproductive_age = [5, 50]
+        self.reproductive_age = [5, 8]
         self.age_step = 0.03
         self.age_of_last_multiplication = 0
         self.reproductive_waiting = 2
@@ -76,19 +76,29 @@ class Cell:
         self.border_color = WHITE
         self.border_thickness = 1
         self.predator = False
-        self.richness = random.uniform(0, 1)
+        self.richness = 1
 
     def update(self):
         ''' Function updates position of cell, it's color '''
         self.position[0] += self.velocity[0]
         self.position[1] += self.velocity[1]
-        if self.position[0] >= SCREEN_WIDTH or self.position[0] <= 0:
+
+        if self.position[0] >= SCREEN_WIDTH:
+            self.position[0] = SCREEN_WIDTH - (self.position[0] - SCREEN_WIDTH)
             self.velocity[0] *= -1
-        if self.position[1] >= SCREEN_HEIGHT or self.position[1] <= 0:
+        elif self.position[0] <= 0:
+            self.position[0] = 2*abs(self.position[0])
+            self.velocity[0] *= -1
+
+        if self.position[1] >= SCREEN_HEIGHT:
+            self.position[1] = SCREEN_HEIGHT - (self.position[1] - SCREEN_HEIGHT)
+            self.velocity[1] *= -1
+        elif self.position[1] <= 0:
+            self.position[1] = 2*abs(self.position[1])
             self.velocity[1] *= -1
 
     def calc_forces(self, list_meal, list_cells):
-        list_victim = [cell for cell in list_cells if not cell.predator]
+        list_victim = [cell for cell in list_cells if not cell.predator and vec_module(find_vector(self, cell)) <= 300]
         list_predator = [cell for cell in list_cells if cell.predator]
 
         # Calculating force of entire engine
@@ -109,15 +119,13 @@ class Cell:
         for cell in list_cells:
             if self != cell and self.predator == cell.predator:
                 vector_to_cell = find_vector(self, cell)
-                if vec_module(vector_to_cell) <= 1 * self.size:
+                if vec_module(vector_to_cell) <= self.size:
                     acceleration -= find_force(np.array(vector_to_cell))
 
         # Calculating force of victim from predator running
         list_of_danger = []
         if not self.predator:
-            for cell in list_predator:
-                if vec_module(find_vector(cell, self)) < 40:
-                    list_of_danger.append(cell)
+            list_of_danger = [cell for cell in list_predator if vec_module(find_vector(cell, self)) < 40]
 
             vec_area = - find_area(self, list_of_danger)
         acceleration_from_predator = vec_area
