@@ -16,6 +16,26 @@ meal_list = [Meal()]
 cells = [cell_1, cell_2, cell_3]
 
 
+def add_peaceful(pos, list_cell):
+    if pos[0] > SCREEN_WIDTH or pos[0] < 0 or pos[1] > SCREEN_HEIGHT or pos[1] < PANEL_HEIGHT:
+        pass
+    else:
+        new_cell = Cell()
+        new_cell.position = np.array(pos)
+        list_cell.append(new_cell)
+
+
+def add_predator(pos, list_cell):
+    if pos[0] > SCREEN_WIDTH or pos[0] < 0 or pos[1] > SCREEN_HEIGHT or pos[1] < PANEL_HEIGHT:
+        pass
+    else:
+        new_cell = Cell()
+        new_cell.predator = True
+        new_cell.color = RED
+        new_cell.position = np.array(pos)
+        list_cell.append(new_cell)
+
+
 def main():
     """Main function of program. It creates a screen where cells lives and makes an actions with them"""
     global meal_list
@@ -29,11 +49,16 @@ def main():
     while not finished:
         clean_screen(screen)
         clock.tick(FPS)
-
+        print(clock.get_fps())
         # Check the users actions
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 finished = True
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    add_peaceful([event.pos[0], event.pos[1] - PANEL_HEIGHT], cells)
+                elif event.button == 3:
+                    add_predator([event.pos[0], event.pos[1] - PANEL_HEIGHT], cells)
 
         # Update all date for one time step
         if len(meal_list) < 15:
