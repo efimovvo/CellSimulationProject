@@ -4,14 +4,16 @@ from cells_classes_module import *
 
 
 cell_1 = Cell()
+cell_1.position = np.array([SCREEN_WIDTH, SCREEN_HEIGHT])
 cell_2 = Cell()
 cell_3 = Cell()
 cell_3.predator = True
+cell_3.multiply_skill = 0.9
+cell_3.age_step = 0.1
 cell_3.color = RED
-cell_2.position = [SCREEN_WIDTH // 3, SCREEN_HEIGHT // 3]
+cell_2.position = np.array([SCREEN_WIDTH // 3, SCREEN_HEIGHT // 3])
 meal_list = [Meal()]
 cells = [cell_1, cell_2, cell_3]
-
 
 
 def main():
@@ -20,6 +22,7 @@ def main():
 
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    screen.set_alpha(None)
     clock = pygame.time.Clock()
     FPS = 100
     finished = False

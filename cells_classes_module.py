@@ -7,8 +7,8 @@ def vec_module(vector):
     return (vector[0]**2 + vector[1]**2)**0.5
 
 
-def find_vector(obj1, obj2):
-    return [-obj1.position[0] + obj2.position[0], -obj1.position[1] + obj2.position[1]]
+def find_vector(object_1, object_2):
+    return - object_1.position + object_2.position
 
 
 def find_area(cell, list_meal):
@@ -17,26 +17,28 @@ def find_area(cell, list_meal):
         cell - on cell, type : cell
         list_meal - list of meal, type : list
     """
-    vec_area = [0.0, 0.0]
+    vec_area = np.array([0.0, 0.0])
     # Calculating vec_area direction
     for meal in list_meal:
-
         vector_to_meal = find_vector(cell, meal)
         vec_area[0] += (vector_to_meal[0] / vec_module(vector_to_meal)**3)
         vec_area[1] += (vector_to_meal[1] / vec_module(vector_to_meal)**3)
 
     # Normalization of vec_area
-    vec_area[0], vec_area[1] = vec_area[0] / vec_module(vec_area), vec_area[1] / vec_module(vec_area)
-    vec_area[0] *= cell.engines
-    vec_area[1] *= cell.engines
+    if vec_module(vec_area) > 0:
+        vec_area = vec_area / vec_module(vec_area)
+        vec_area *= cell.engines
 
     return vec_area
 
 
 def find_force(vector):
-    force = vector / (vec_module(vector) / 5)**10
+    if vec_module(vector) == 0:
+        force = np.array([0, 0])
+    else:
+        force = vector / (vec_module(vector) / 5)**10
     if vec_module(force) > 10:
-        force = 10
+        force *= 10 / vec_module(force)
     return force
 
 
@@ -56,8 +58,9 @@ class Cell:
         self.multiply_skill = 0.5
         self.age = 0
         self.size = 5
-        self.position = [SCREEN_WIDTH / 2 * random.uniform(0, 1), SCREEN_HEIGHT / 2 * random.uniform(0, 1)]
-        self.velocity = [1, 1]
+        self.position = np.array([SCREEN_WIDTH / 2 * random.uniform(0, 1),
+                                  SCREEN_HEIGHT / 2 * random.uniform(0, 1)])
+        self.velocity = np.array([1.0, 1.0])
         # Genetic code
         self.shell_thickness = 0.5
         self.satiety = 1  # сытость
@@ -85,29 +88,46 @@ class Cell:
             self.velocity[1] *= -1
 
     def calc_forces(self, list_meal, list_cells):
+        list_victim = [cell for cell in list_cells if not cell.predator]
+        list_predator = [cell for cell in list_cells if cell.predator]
+
         # Calculating force of entire engine
         # Get direction vector to meal
-        list_victim = [cell for cell in list_cells if not cell.predator]
         if not self.predator:
             vec_area = find_area(self, list_meal)
         elif len(list_victim) != 0:
             vec_area = find_area(self, list_victim)
         else:
             vec_area = find_area(self, list_meal)
-        acceleration = np.array(vec_area)
+        acceleration_to_meal = vec_area
+
         # Calculating force of viscosity
         viscosity = 0.5
-        acceleration -= viscosity * np.array(self.velocity)
+        acceleration = - viscosity * np.array(self.velocity)
 
         # Calculating force of cell to cell interaction
         for cell in list_cells:
-            if self != cell:
+            if self != cell and self.predator == cell.predator:
                 vector_to_cell = find_vector(self, cell)
                 if vec_module(vector_to_cell) <= 1 * self.size:
                     acceleration -= find_force(np.array(vector_to_cell))
 
-        self.velocity[0] += acceleration[0]
-        self.velocity[1] += acceleration[1]
+        # Calculating force of victim from predator running
+        list_of_danger = []
+        if not self.predator:
+            for cell in list_predator:
+                if vec_module(find_vector(cell, self)) < 40:
+                    list_of_danger.append(cell)
+
+            vec_area = - find_area(self, list_of_danger)
+        acceleration_from_predator = vec_area
+
+        if len(list_of_danger) > 0:
+            acceleration += acceleration_from_predator
+        else:
+            acceleration += acceleration_to_meal
+
+        self.velocity += acceleration
 
     def multiply(self, list_cells):
         """:arg     list_cells - list of cells"""
@@ -117,18 +137,19 @@ class Cell:
         if self.predator:
             new_cell.predator = True
             new_cell.color = RED
+            new_cell.engines = 1.2
         phi = random.uniform(0, 2 * np.pi)  # random phi
         x = self.position[0] + 2 * self.size * np.cos(phi)  # x cor of center new cell
         y = self.position[1] + 2 * self.size * np.sin(phi)  # y cor of center new cell
 
         for cell in list_cells:  # do not spawn near to each other
-            vec = [cell.position[0] - x, cell.position[1] - y]
-            module_vec = vec_module(vec)
+            vector = cell.position - np.array([x, y])
+            module_vec = vec_module(vector)
             if module_vec <= 2 * self.size:
                 spawn = False
                 break
         if spawn:
-            new_cell.position = [int(x), int(y)]
+            new_cell.position = np.array([x, y])
             self.setiety, new_cell.satiety = self.satiety / 2, self.satiety / 2
             return new_cell
         else:
@@ -137,7 +158,8 @@ class Cell:
 
 class Meal:
     def __init__(self):
-        self.position = [random.uniform(0, 1) * SCREEN_WIDTH, random.uniform(0, 1) * SCREEN_HEIGHT]
+        self.position = np.array([random.uniform(0, 1) * SCREEN_WIDTH,
+                                  random.uniform(0, 1) * SCREEN_HEIGHT])
         self.size = 3
         self.richness = random.uniform(0, 1)
 
