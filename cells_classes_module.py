@@ -148,6 +148,7 @@ class Cell:
             new_cell.color = RED
             new_cell.engines = 1.4
             new_cell.satiety_step = 0.005
+            new_cell.reproductive_age = [5, 50]
         phi = random.uniform(0, 2 * np.pi)  # random phi
         x = self.position[0] + 2 * self.size * np.cos(phi)  # x cor of center new cell
         y = self.position[1] + 2 * self.size * np.sin(phi)  # y cor of center new cell
