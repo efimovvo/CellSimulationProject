@@ -32,13 +32,16 @@ def add_predator(pos, list_cell):
         new_cell.predator = True
         new_cell.color = RED
         new_cell.position = np.array(pos)
+        new_cell.engines = 2
+        new_cell.satiety_step = 0.008
+        new_cell.reproductive_age = [5, 50]
         list_cell.append(new_cell)
 
 
 def main():
     """Main function of program. It creates a screen where cells lives and makes an actions with them"""
     global meal_list
-    dt = 0
+    time = 0
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     screen.set_alpha(None)
@@ -46,7 +49,7 @@ def main():
     fps = 100
     finished = False
     while not finished:
-        dt += 1
+        time += 1
         clean_screen(screen)
         clock.tick(fps)
         # Check the users actions
@@ -62,8 +65,8 @@ def main():
         # Update all date for one time step
         if len(meal_list) < 50:
             meal_list.append(Meal())
-        multiply(cells, dt)
-        update(cells, meal_list, dt)
+        multiply(cells, time)
+        update(cells, meal_list, time)
 
         # Draw all
         # Draw the meal on the screen

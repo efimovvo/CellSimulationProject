@@ -99,7 +99,7 @@ class Cell:
 
     def calc_forces(self, list_meal, list_cells):
         list_victim = [cell for cell in list_cells
-                       if not cell.predator and vec_module(find_vector(self, cell)) <= 200]
+                       if not cell.predator and vec_module(find_vector(self, cell)) <= 400]
         list_predator = [cell for cell in list_cells if cell.predator]
 
         # Calculating force of entire engine
@@ -146,8 +146,8 @@ class Cell:
         if self.predator:
             new_cell.predator = True
             new_cell.color = RED
-            new_cell.engines = 1.4
-            new_cell.satiety_step = 0.005
+            new_cell.engines = 2
+            new_cell.satiety_step = 0.008
             new_cell.reproductive_age = [5, 50]
         phi = random.uniform(0, 2 * np.pi)  # random phi
         x = self.position[0] + 2 * self.size * np.cos(phi)  # x cor of center new cell
