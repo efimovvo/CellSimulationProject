@@ -3,7 +3,7 @@ import pygame
 # Interface size
 
 # Instrumental panel size
-PANEL_HEIGHT = 100
+PANEL_HEIGHT = 50
 # Simulating area size
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 600
@@ -45,57 +45,105 @@ def draw_plot(surf):
     )
 
 
-def data(list_cells, dt):
+def write_data(list_cells, time):
     list_victim = [cell for cell in list_cells if not cell.predator]
     list_predator = [cell for cell in list_cells if cell.predator]
     if list_victim != 0:
         with open('data.txt', 'a') as file:
-            cell_data = [str(len(list_victim)), str(len(list_predator)), str(dt)]
+            cell_data = [str(len(list_victim)), str(len(list_predator)), str(time)]
             cell_data = ' '.join(cell_data)
             cell_data = cell_data + '\n'
             file.write(cell_data)
 
 
-def graph(surf):
-    font_surface = pygame.font.SysFont('comic sans', 18)
-    y_axis = font_surface.render('10', True, BLACK)
-    x_axis = font_surface.render('125', True, BLACK)
-    image_axis = pygame.Surface((PLOT_AREA_WIDTH, PLOT_AREA_HEIGHT), pygame.SRCALPHA)
-    image_data = pygame.Surface((PLOT_AREA_WIDTH, PLOT_AREA_HEIGHT))
-    image_data.set_colorkey(BLACK)
-    image_data.set_alpha(255)
+def read_data():
     input_data = []
-    predators_list = []
     victims_list = []
+    predators_list = []
     time = []
-    pygame.draw.line(image_axis, BLACK, (100, 0), (100, PLOT_AREA_HEIGHT - 100))
-    pygame.draw.line(image_axis, BLACK, (100, PLOT_AREA_HEIGHT - 101), (PLOT_AREA_WIDTH, PLOT_AREA_HEIGHT - 101))
-    for i in range(1, 10):
-        pygame.draw.line(image_axis, BLACK, (90, PLOT_AREA_HEIGHT - 100 - i * 50),
-                         (110, PLOT_AREA_HEIGHT - 100 - i * 50))
-    for i in range(1, 20):
-        pygame.draw.line(image_axis, BLACK, (25 * i + 100, 495),
-                         (100 + 25 * i, 505))
     with open('data.txt', 'r') as file:
         for line in file:
             input_data.append(line.split())
     for i in range(len(input_data)):
-        victims_list.append(input_data[i][0])
-        predators_list.append(input_data[i][1])
-        time.append(input_data[i][2])
-    for i in range(len(input_data) - 1):
-        pygame.draw.line(image_data, GREEN, (int(time[i]) / 5, PLOT_AREA_HEIGHT - 5 * int(victims_list[i]),),
-                         (int(time[i + 1]) / 5, PLOT_AREA_HEIGHT - 5 * int(victims_list[i + 1])))
-        pygame.draw.line(image_data, RED, (int(time[i]) / 5, PLOT_AREA_HEIGHT - 5 * int(predators_list[i]),),
-                         (int(time[i + 1]) / 5, PLOT_AREA_HEIGHT - 5 * int(predators_list[i + 1])))
+        victims_list.append(int(input_data[i][0]))
+        predators_list.append(int(input_data[i][1]))
+        time.append(int(input_data[i][2]))
 
-    surf.blit(image_data, (PLOT_AREA_WIDTH + 100, 0))
-    surf.blit(image_axis, (PLOT_AREA_WIDTH, 100))
-    surf.blit(y_axis, (PLOT_AREA_WIDTH + 75, PLOT_AREA_HEIGHT - 155 + PANEL_HEIGHT))
-    surf.blit(x_axis, (PLOT_AREA_WIDTH+115, 505 + PANEL_HEIGHT+5))
+    return victims_list, predators_list, time
 
 
-def draw_cells(list_cells, surf):
+def draw_graph(surface, starting_point, sizes, x_data, y_data):
+    # Parameters
+    offset = 30
+    tick_length = 10
+    number_of_ticks = [20, 10]
+    x_scale = 500
+    y_max = (max(max([y for y in y_data])) // 10 + 1) * 10
+    y_min = 0
+    x_max = max(x_data) if max(x_data) > x_scale else x_scale
+    x_min = x_max - x_scale
+
+    image_axis = pygame.Surface((sizes[0], sizes[1]), pygame.SRCALPHA)
+    image_data = pygame.Surface((sizes[0] - 2 * offset, sizes[1] - 2 * offset))
+    image_data.set_colorkey(BLACK)
+    image_data.set_alpha(255) # Предлагаю удалить, прозрачность не нужна
+
+    # Axes X and Y accordingly
+    pygame.draw.line(image_axis, BLACK,
+                     (offset, sizes[1] - offset),
+                     (sizes[0] - offset, sizes[1] - offset))
+    pygame.draw.line(image_axis, BLACK,
+                     (offset, offset),
+                     (offset, sizes[1] - offset))
+
+    # Ticks on axes X and Y accordingly
+    font_surface = pygame.font.SysFont('verdana', 10)
+    for i in range(number_of_ticks[0] + 1):
+        x = offset + (sizes[0] - 2 * offset) * i / number_of_ticks[0]
+        y = sizes[1] - offset
+        pygame.draw.line(image_axis, BLACK, (x, y), (x, y + tick_length))
+        tick_text = str(int(x_min + x_scale * i / number_of_ticks[0]))
+        tick_text_surface = font_surface.render(tick_text, True, BLACK)
+        surface.blit(tick_text_surface,
+                     (starting_point[0] + 0.9 * offset + (sizes[0] - 2 * offset) * i / number_of_ticks[0],
+                      starting_point[1] + sizes[1] - offset + tick_length))
+    for i in range(number_of_ticks[1] + 1):
+        pygame.draw.line(image_axis, BLACK,
+                         (offset, offset + (sizes[1] - 2 * offset) * i / number_of_ticks[1]),
+                         (offset - 2 * tick_length,
+                          offset + (sizes[1] - 2 * offset) * i / number_of_ticks[1])
+                         )
+        tick_text = str(int(y_max - (y_max - y_min) * i / number_of_ticks[1]))
+        tick_text_surface = font_surface.render(tick_text, True, BLACK)
+        surface.blit(tick_text_surface,
+                     (starting_point[0],
+                      starting_point[1] + offset + (sizes[1] - 2 * offset) * i / number_of_ticks[1]))
+
+    min_index_on_screen = 0
+    for i in range(len(x_data)):
+        if x_data[i] <= x_min:
+            min_index_on_screen = i
+    x_data = x_data[min_index_on_screen:]
+    for i in range(len(y_data)):
+        y_data[i] = y_data[i][min_index_on_screen:]
+
+    for i in range(len(y_data)):
+        line = []
+        color = GREEN if i == 0 else RED
+        for j in range(len(x_data)):
+            line.append(((sizes[0] - 2 * offset) * (x_data[j] - x_min) / x_scale,
+                         (sizes[1] - 2 * offset) * (1 - (y_data[i][j] - y_min) / y_max))
+                        )
+        if len(line) > 0:
+            pygame.draw.lines(image_data, color, False, line, 1)
+
+    surface.blit(image_axis,
+                 (starting_point[0], starting_point[1]))
+    surface.blit(image_data,
+                 (starting_point[0] + offset, starting_point[1] + offset))
+
+
+def draw_cells(list_cells, surface):
     """
     :arg    list_cells - list of cells, list
             surf - surface where cells will be drawn
@@ -117,13 +165,13 @@ def draw_cells(list_cells, surf):
             cell.border_thickness = 2
 
         pygame.draw.circle(
-            surf,
+            surface,
             cell.color,
             position,
             cell.size
         )
         pygame.draw.circle(
-            surf,
+            surface,
             cell.border_color,
             position,
             cell.size,
@@ -131,7 +179,7 @@ def draw_cells(list_cells, surf):
         )
 
 
-def draw_meal(meal_list, surf):
+def draw_meal(meal_list, surface):
     """ Function draws a meal on the surface.
     :arg
     ---
@@ -144,7 +192,7 @@ def draw_meal(meal_list, surf):
 
         if meal != 0:
             pygame.draw.rect(
-                surf,
+                surface,
                 WHITE,
                 [x_min, y_min, meal.size, meal.size]
             )

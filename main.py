@@ -2,33 +2,37 @@ from vis_module import *
 from actions_module import *
 from cells_classes_module import *
 
-cells = []
-for i in range(50):
-    new_cell = Cell()
-    new_cell.position = np.array([random.random() * SCREEN_WIDTH, random.random() * SCREEN_HEIGHT])
-    new_cell.age = random.random() * 50
-    cells.append(new_cell)
-for i in range(7):
-    new_cell = Cell()
-    new_cell.position = np.array([random.random() * SCREEN_WIDTH, random.random() * SCREEN_HEIGHT])
-    new_cell.age = random.random() * 30
-    new_cell.predator = True
-    new_cell.color = RED
-    new_cell.engines = 3 + (2 * random.random() - 1) ** 3
-    new_cell.satiety_step = 0.005
-    new_cell.reproductive_age = [20, 50]
-    new_cell.reproductive_waiting = 3
-    cells.append(new_cell)
-meal_list = [Meal()]
+
+def restart_the_game():
+    cell_list = []
+    for i in range(50):
+        new_cell = Cell()
+        new_cell.position = np.array([random.random() * SCREEN_WIDTH, random.random() * SCREEN_HEIGHT])
+        new_cell.age = random.random() * 50
+        cell_list.append(new_cell)
+    for i in range(10):
+        new_cell = Cell()
+        new_cell.position = np.array([random.random() * SCREEN_WIDTH, random.random() * SCREEN_HEIGHT])
+        new_cell.age = random.random() * 20
+        new_cell.predator = True
+        new_cell.color = RED
+        new_cell.engines = 3 + (2 * random.random() - 1) ** 3
+        new_cell.satiety_step = 0.005
+        new_cell.reproductive_age = [20, 50]
+        new_cell.reproductive_waiting = 3
+        cell_list.append(new_cell)
+    meal_list = [Meal()]
+    return cell_list, meal_list
 
 
-def add_peaceful(pos, list_cell):
-    if pos[0] > SCREEN_WIDTH or pos[0] < 0 or pos[1] > SCREEN_HEIGHT or pos[1] < PANEL_HEIGHT:
+def add_peaceful(position, cell_list):
+    if (position[0] > SCREEN_WIDTH or position[0] < 0
+            or position[1] > SCREEN_HEIGHT or position[1] < PANEL_HEIGHT):
         pass
     else:
         new_cell = Cell()
-        new_cell.position = np.array(pos)
-        list_cell.append(new_cell)
+        new_cell.position = np.array(position)
+        cell_list.append(new_cell)
 
 
 def add_predator(pos, list_cell):
@@ -48,7 +52,7 @@ def add_predator(pos, list_cell):
 
 def main():
     """Main function of program. It creates a screen where cells lives and makes an actions with them"""
-    global meal_list
+    cell_list, meal_list = restart_the_game()
     time = 0
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -66,26 +70,31 @@ def main():
                 finished = True
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    add_peaceful([event.pos[0], event.pos[1] - PANEL_HEIGHT], cells)
+                    add_peaceful([event.pos[0], event.pos[1] - PANEL_HEIGHT], cell_list)
                 elif event.button == 3:
-                    add_predator([event.pos[0], event.pos[1] - PANEL_HEIGHT], cells)
+                    add_predator([event.pos[0], event.pos[1] - PANEL_HEIGHT], cell_list)
 
         # Update all date for one time step
         if len(meal_list) < 20:
             meal_list.append(Meal())
-        multiply(cells, time)
-        update(cells, meal_list, time)
+        multiply(cell_list, time)
+        update(cell_list, meal_list, time)
 
         # Draw all
         # Draw the meal on the screen
         draw_meal(meal_list, screen)
         # Draw the cells on the screen
-        draw_cells(cells, screen)
+        draw_cells(cell_list, screen)
 
         # Draw interface objects
         draw_user_panel(screen)
         # Draw population data
-        graph(screen)
+        victims_list, predators_list, time_list = read_data()
+        draw_graph(screen,
+                   starting_point=[SCREEN_WIDTH, PANEL_HEIGHT],
+                   sizes=[PLOT_AREA_WIDTH, SCREEN_HEIGHT // 2],
+                   x_data=time_list,
+                   y_data=[victims_list, predators_list])
         # Update the screen
         pygame.display.flip()
 
