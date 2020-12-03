@@ -78,10 +78,20 @@ def draw_graph(surface, starting_point, sizes, x_data, y_data):
     tick_length = 10
     number_of_ticks = [20, 10]
     x_scale = 500
-    y_max = (max(max([y for y in y_data])) // 10 + 1) * 10
-    y_min = 0
+
     x_max = max(x_data) if max(x_data) > x_scale else x_scale
     x_min = x_max - x_scale
+
+    min_index_on_screen = 0
+    for i in range(len(x_data)):
+        if x_data[i] <= x_min:
+            min_index_on_screen = i
+    x_data = x_data[min_index_on_screen:]
+    for i in range(len(y_data)):
+        y_data[i] = y_data[i][min_index_on_screen:]
+
+    y_max = (max(max(y_data)) // 10 + 1) * 10
+    y_min = 0
 
     image_axis = pygame.Surface((sizes[0], sizes[1]), pygame.SRCALPHA)
     image_data = pygame.Surface((sizes[0] - 2 * offset, sizes[1] - 2 * offset))
@@ -119,14 +129,6 @@ def draw_graph(surface, starting_point, sizes, x_data, y_data):
                      (starting_point[0],
                       starting_point[1] + offset + (sizes[1] - 2 * offset) * i / number_of_ticks[1]))
 
-    min_index_on_screen = 0
-    for i in range(len(x_data)):
-        if x_data[i] <= x_min:
-            min_index_on_screen = i
-    x_data = x_data[min_index_on_screen:]
-    for i in range(len(y_data)):
-        y_data[i] = y_data[i][min_index_on_screen:]
-
     for i in range(len(y_data)):
         line = []
         color = GREEN if i == 0 else RED
@@ -134,7 +136,7 @@ def draw_graph(surface, starting_point, sizes, x_data, y_data):
             line.append(((sizes[0] - 2 * offset) * (x_data[j] - x_min) / x_scale,
                          (sizes[1] - 2 * offset) * (1 - (y_data[i][j] - y_min) / y_max))
                         )
-        if len(line) > 0:
+        if len(line) > 1:
             pygame.draw.lines(image_data, color, False, line, 1)
 
     surface.blit(image_axis,
