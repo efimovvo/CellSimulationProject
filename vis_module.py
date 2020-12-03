@@ -72,12 +72,11 @@ def read_data():
     return victims_list, predators_list, time
 
 
-def draw_graph(surface, starting_point, sizes, x_data, y_data):
+def draw_graph(surface, starting_point, sizes, x_data, y_data, x_scale = 500):
     # Parameters
     offset = 30
     tick_length = 10
     number_of_ticks = [20, 10]
-    x_scale = 500
 
     x_max = max(x_data) if max(x_data) > x_scale else x_scale
     x_min = x_max - x_scale
@@ -138,6 +137,12 @@ def draw_graph(surface, starting_point, sizes, x_data, y_data):
                         )
         if len(line) > 1:
             pygame.draw.lines(image_data, color, False, line, 1)
+            pygame.draw.circle(
+                image_data,
+                color,
+                line[-1],
+                3
+            )
 
     surface.blit(image_axis,
                  (starting_point[0], starting_point[1]))

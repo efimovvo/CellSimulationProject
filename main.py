@@ -95,6 +95,12 @@ def main():
                    sizes=[PLOT_AREA_WIDTH, SCREEN_HEIGHT // 2],
                    x_data=time_list,
                    y_data=[victims_list, predators_list])
+        draw_graph(screen,
+                   starting_point=[SCREEN_WIDTH, PANEL_HEIGHT + SCREEN_HEIGHT // 2],
+                   sizes=[PLOT_AREA_WIDTH, SCREEN_HEIGHT // 2],
+                   x_data=predators_list,
+                   y_data=[victims_list],
+                   x_scale=10 * (max(predators_list) // 10 + 1))
         # Update the screen
         pygame.display.flip()
 
