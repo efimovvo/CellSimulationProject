@@ -65,18 +65,18 @@ class Cell:
         self.shell_thickness = 0.5
         self.satiety = 1  # сытость
         self.satiety_step = 0.003
-        self.engines = 0.5 + random.random()
-        self.reproductive_age = [5, 10]
+        self.engines = 3 + (2 * random.random() - 1)**3
+        self.reproductive_age = [5, 80]
         self.age_step = 0.03
         self.age_of_last_multiplication = 0
-        self.reproductive_waiting = 2
+        self.reproductive_waiting = 0.5
         self.aggressiveness = 0
         self.friendliness = 0
         self.color = GREEN  # Заменить постоянный цвет на зависимый
         self.border_color = WHITE
         self.border_thickness = 1
         self.predator = False
-        self.richness = 1
+        self.richness = 0.5
 
     def update(self):
         ''' Function updates position of cell, it's color '''
@@ -99,17 +99,34 @@ class Cell:
 
     def calc_forces(self, list_meal, list_cells):
         list_victim = [cell for cell in list_cells
-                       if not cell.predator and vec_module(find_vector(self, cell)) <= 400]
-        list_predator = [cell for cell in list_cells if cell.predator]
+                       if not cell.predator and vec_module(find_vector(self, cell)) <= 100]
+        if len(list_victim) == 0:
+            list_victim = [cell for cell in list_cells
+                           if not cell.predator and vec_module(find_vector(self, cell)) <= 300]
+        if len(list_victim) == 0:
+            list_victim = [cell for cell in list_cells
+                           if not cell.predator and vec_module(find_vector(self, cell)) <= 600]
+
+        closest_meal = [meal for meal in list_meal
+                        if vec_module(find_vector(self, meal)) <= 100]
+        if len(closest_meal) == 0:
+            closest_meal = [meal for meal in list_meal
+                            if vec_module(find_vector(self, meal)) <= 300]
+        if len(closest_meal) == 0:
+            closest_meal = [meal for meal in list_meal
+                            if vec_module(find_vector(self, meal)) <= 600]
+
+        list_predator = [cell for cell in list_cells if cell.predator
+                         and vec_module(find_vector(self, cell)) <= 200]
 
         # Calculating force of entire engine
         # Get direction vector to meal
         if not self.predator:
-            vec_area = find_area(self, list_meal)
+            vec_area = find_area(self, closest_meal)
         elif len(list_victim) != 0:
             vec_area = find_area(self, list_victim)
         else:
-            vec_area = find_area(self, list_meal)
+            vec_area = find_area(self, closest_meal)
         acceleration_to_meal = vec_area
 
         # Calculating force of viscosity
@@ -146,9 +163,10 @@ class Cell:
         if self.predator:
             new_cell.predator = True
             new_cell.color = RED
-            new_cell.engines = 2
-            new_cell.satiety_step = 0.008
-            new_cell.reproductive_age = [5, 50]
+            new_cell.engines = 3 + (2 * random.random() - 1)**3
+            new_cell.satiety_step = 0.005
+            new_cell.reproductive_age = [20, 50]
+            new_cell.reproductive_waiting = 3
         phi = random.uniform(0, 2 * np.pi)  # random phi
         x = self.position[0] + 2 * self.size * np.cos(phi)  # x cor of center new cell
         y = self.position[1] + 2 * self.size * np.sin(phi)  # y cor of center new cell

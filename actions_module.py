@@ -30,7 +30,7 @@ def multiply(list_cells, time):
         if (p > cell.multiply_skill
                 and cell.reproductive_age[0] <= cell.age <= cell.reproductive_age[1]
                 and cell.age - cell.age_of_last_multiplication > cell.reproductive_waiting
-                and cell.satiety >= 0.4
+                and cell.satiety >= 0.5
         ):
             new_cell = cell.multiply(list_cells)
             if new_cell != 0:

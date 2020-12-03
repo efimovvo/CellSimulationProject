@@ -2,17 +2,24 @@ from vis_module import *
 from actions_module import *
 from cells_classes_module import *
 
-cell_1 = Cell()
-cell_1.position = np.array([SCREEN_WIDTH, SCREEN_HEIGHT])
-cell_2 = Cell()
-cell_3 = Cell()
-cell_3.predator = True
-cell_3.multiply_skill = 0.9
-cell_3.age_step = 0.1
-cell_3.color = RED
-cell_2.position = np.array([SCREEN_WIDTH // 3, SCREEN_HEIGHT // 3])
+cells = []
+for i in range(50):
+    new_cell = Cell()
+    new_cell.position = np.array([random.random() * SCREEN_WIDTH, random.random() * SCREEN_HEIGHT])
+    new_cell.age = random.random() * 50
+    cells.append(new_cell)
+for i in range(7):
+    new_cell = Cell()
+    new_cell.position = np.array([random.random() * SCREEN_WIDTH, random.random() * SCREEN_HEIGHT])
+    new_cell.age = random.random() * 30
+    new_cell.predator = True
+    new_cell.color = RED
+    new_cell.engines = 3 + (2 * random.random() - 1) ** 3
+    new_cell.satiety_step = 0.005
+    new_cell.reproductive_age = [20, 50]
+    new_cell.reproductive_waiting = 3
+    cells.append(new_cell)
 meal_list = [Meal()]
-cells = [cell_1, cell_2, cell_3]
 
 
 def add_peaceful(pos, list_cell):
@@ -32,9 +39,10 @@ def add_predator(pos, list_cell):
         new_cell.predator = True
         new_cell.color = RED
         new_cell.position = np.array(pos)
-        new_cell.engines = 2
-        new_cell.satiety_step = 0.008
+        new_cell.engines = 2 + (random.random() * 2)**0.5
+        new_cell.satiety_step = 0.005
         new_cell.reproductive_age = [5, 50]
+        new_cell.reproductive_waiting = 3
         list_cell.append(new_cell)
 
 
@@ -63,7 +71,7 @@ def main():
                     add_predator([event.pos[0], event.pos[1] - PANEL_HEIGHT], cells)
 
         # Update all date for one time step
-        if len(meal_list) < 50:
+        if len(meal_list) < 20:
             meal_list.append(Meal())
         multiply(cells, time)
         update(cells, meal_list, time)
