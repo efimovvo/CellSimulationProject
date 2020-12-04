@@ -65,7 +65,7 @@ class Cell:
         self.shell_thickness = 0.5
         self.satiety = 1  # сытость
         self.satiety_step = 0.003
-        self.engines = 3 + (2 * random.random() - 1)**3
+        self.engines = 3 + (3 * random.random() - 1.5)**3
         self.reproductive_age = [5, 80]
         self.age_step = 0.03
         self.age_of_last_multiplication = 0
@@ -165,7 +165,7 @@ class Cell:
             new_cell.color = RED
             new_cell.engines = 3 + (2 * random.random() - 1)**3
             new_cell.satiety_step = 0.005
-            new_cell.reproductive_age = [20, 50]
+            new_cell.reproductive_age = [5, 50]
             new_cell.reproductive_waiting = 3
         phi = random.uniform(0, 2 * np.pi)  # random phi
         x = self.position[0] + 2 * self.size * np.cos(phi)  # x cor of center new cell

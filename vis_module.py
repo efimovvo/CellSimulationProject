@@ -137,12 +137,7 @@ def draw_graph(surface, starting_point, sizes, x_data, y_data, x_scale = 500):
                         )
         if len(line) > 1:
             pygame.draw.lines(image_data, color, False, line, 1)
-            pygame.draw.circle(
-                image_data,
-                color,
-                line[-1],
-                3
-            )
+            pygame.draw.circle(image_data, color, line[-1], 3)
 
     surface.blit(image_axis,
                  (starting_point[0], starting_point[1]))
@@ -166,7 +161,7 @@ def draw_cells(list_cells, surface):
             cell.color = (102 - cell.satiety * 102, 150 + cell.satiety * 102, 102 - cell.satiety * 102)
         if cell.age < cell.reproductive_age[0]:
             cell.border_thickness = -1
-        elif cell.reproductive_age[0] < cell.age < cell.reproductive_age[1]:
+        elif cell.reproductive_age[0] <= cell.age <= cell.reproductive_age[1]:
             cell.border_thickness = 1
         elif cell.age > cell.reproductive_age[1]:
             cell.border_thickness = 2

@@ -9,14 +9,16 @@ def restart_the_game():
         new_cell = Cell()
         new_cell.position = np.array([random.random() * SCREEN_WIDTH, random.random() * SCREEN_HEIGHT])
         new_cell.age = random.random() * 50
+        new_cell.satiety = random.random()
         cell_list.append(new_cell)
-    for i in range(10):
+    for i in range(20):
         new_cell = Cell()
         new_cell.position = np.array([random.random() * SCREEN_WIDTH, random.random() * SCREEN_HEIGHT])
         new_cell.age = random.random() * 20
         new_cell.predator = True
         new_cell.color = RED
         new_cell.engines = 3 + (2 * random.random() - 1) ** 3
+        new_cell.satiety = random.random()
         new_cell.satiety_step = 0.005
         new_cell.reproductive_age = [20, 50]
         new_cell.reproductive_waiting = 3
