@@ -24,17 +24,43 @@ RED = (204, 0, 0)
 GREEN = (0, 204, 0)
 BLUE = (0, 0, 204)
 
+# Interface parameters
+FOOD_MAX_QUANTITY = 20
+
+
+class Button:
+    def __init__(self, position, size, text):
+        self.position = position
+        self.size = size
+        self.text = text
+        self.active = False
+
+    def click(self):
+        if self.active:
+            self.active = False
+        else:
+            self.active = True
+
+    def draw(self, surf):
+        color = DARK_GREY if self.active else WHITE
+        pygame.draw.rect(surf, color,
+                         [self.position[0], self.position[1],
+                          self.size[0], self.size[1]])
+
 
 def clean_screen(surf):
     surf.fill(DARK_GREY)
 
 
-def draw_user_panel(surf):
+def draw_user_panel(surf, button_list):
     pygame.draw.rect(
         surf,
         LIGHT_GREY,
         [0, 0, WIDTH, PANEL_HEIGHT]
     )
+
+    for button in button_list:
+        button.draw(surf)
 
 
 def draw_plot(surf):

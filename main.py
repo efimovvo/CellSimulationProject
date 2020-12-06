@@ -52,8 +52,18 @@ def add_predator(pos, list_cell):
         list_cell.append(new_cell)
 
 
+def find_button(positon, button_list):
+    for button in button_list:
+        if (positon[0] >= button.position[0]
+                and positon[0] <= button.position[0] + button.size[0]
+                and positon[1] >= button.position[1]
+                and positon[1] <= button.position[1] + button.size[1]):
+            button.click()
+
+
 def main():
     """Main function of program. It creates a screen where cells lives and makes an actions with them"""
+    button_list = [Button([10, 10], [10, 10], 'Button')]
     cell_list, meal_list = restart_the_game()
     time = 0
     pygame.init()
@@ -73,11 +83,12 @@ def main():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     add_peaceful([event.pos[0], event.pos[1] - PANEL_HEIGHT], cell_list)
+                    find_button(event.pos, button_list)
                 elif event.button == 3:
                     add_predator([event.pos[0], event.pos[1] - PANEL_HEIGHT], cell_list)
 
         # Update all date for one time step
-        if len(meal_list) < 20:
+        if len(meal_list) < FOOD_MAX_QUANTITY:
             meal_list.append(Meal())
         multiply(cell_list, time)
         update(cell_list, meal_list, time)
@@ -89,7 +100,7 @@ def main():
         draw_cells(cell_list, screen)
 
         # Draw interface objects
-        draw_user_panel(screen)
+        draw_user_panel(screen, button_list)
         # Draw population data
         victims_list, predators_list, time_list = read_data()
         draw_graph(screen,
