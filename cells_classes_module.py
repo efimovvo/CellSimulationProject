@@ -4,10 +4,17 @@ from vis_module import *
 
 
 def vec_module(vector):
+    """:arg :   vector - type : numpy array
+
+    Function returns module of vector"""
     return (vector[0]**2 + vector[1]**2)**0.5
 
 
 def find_vector(object_1, object_2):
+    """:arg :   object_1, object_2 - the objects between which vector will be calculated,
+                type : Cell or Meal
+
+    Function returns vector between objects, type : numpy array"""
     return - object_1.position + object_2.position
 
 
@@ -33,25 +40,66 @@ def find_area(cell, list_meal):
 
 
 def find_force(vector):
+    """:arg :   vector - type : numpy array
+    Function returns force (type : numpy array) that moves cell"""
+
     if vec_module(vector) == 0:
         force = np.array([0, 0])
     else:
+        # value of force :
         force = vector / (vec_module(vector) / 5)**10
+
     if vec_module(force) > 10:
         force *= 10 / vec_module(force)
+
     return force
 
 
 class Cell:
     """Common class for all cells
     attributes:
-            multiply_skill - skill to multiply, float from 0 (the best) to 1 ( the worst)
-            age - float, age of cell
-            size - int, size of cell
-            position - cords of center, list
-            velocity - velocity of cell [vx, vy], list
-            engines - describe how much cells will be move
-            color - Tuple, color of cell
+            multiply_skill - skill to multiply, type : float, value is from 0 (the best) to 1 ( the worst)
+
+            age - type : float, age of cell
+
+            size - type : int, size of cell
+
+            position - type : numpy array, cords of center the cell
+
+            velocity - type : numpy array, velocity of the cell
+
+            satiety - type : float, satiety of the cell
+
+            satiety_step - type : float, it is taken from satiety every moment of time,
+                                    responsible how fast satiety gets loser
+
+            engines - type : float, responsible for limit of velocity the cell
+
+            reproductive_age - type : list, it is limits when cell could multiply
+
+            age_step - type : float, it is added to the age every moment of time,
+                                responsible how fast cell gets older
+
+            age_of_last_multiplication - type : float or int, it responsible for age when the cell
+                                            multiply the last time
+
+            reproductive_waiting - type : float, it responsible how long the cell have to wait before multiply
+
+            color - type : list, color of cell
+
+            border_color - type : list, color of border the cell
+
+            border_thickness - type : int, variable responsible for thickness of border,
+                                        when cell is gets older border is gets more and more white
+
+            predator - type : Bool, it responsible for type of the cell : if True cell is predator, else :
+                                        peaceful cell
+
+            richness - type : float, responsible how much predator cell will get from cell when the last one will
+                                                                                                        be eaten
+
+            view_radius - type : float or int, how much peaceful cell can see to find predator
+
     """
     def __init__(self):
         # Common property
@@ -62,27 +110,28 @@ class Cell:
                                   SCREEN_HEIGHT / 2 * random.uniform(0, 1)])
         self.velocity = np.array([1.0, 1.0])
         # Genetic code
-        self.shell_thickness = 0.5
-        self.satiety = 1  # сытость
+        self.satiety = 1.0  # сытость
         self.satiety_step = 0.003
         self.engines = 3 + (3 * random.random() - 1.5)**3
         self.reproductive_age = [5, 80]
         self.age_step = 0.03
         self.age_of_last_multiplication = 0
         self.reproductive_waiting = 0.5
-        self.aggressiveness = 0
-        self.friendliness = 0
-        self.color = GREEN  # Заменить постоянный цвет на зависимый
+        self.color = GREEN
         self.border_color = WHITE
         self.border_thickness = 1
         self.predator = False
         self.richness = 0.5
+        self.view_radius = 200
 
     def update(self):
-        ''' Function updates position of cell, it's color '''
+        """ Function updates position of cell, cell can not run outside the screen """
+
+        # updates position :
         self.position[0] += self.velocity[0]
         self.position[1] += self.velocity[1]
 
+        # cell can not run outside the screen :
         if self.position[0] >= SCREEN_WIDTH:
             self.position[0] = SCREEN_WIDTH - (self.position[0] - SCREEN_WIDTH)
             self.velocity[0] *= -1
@@ -98,8 +147,19 @@ class Cell:
             self.velocity[1] *= -1
 
     def calc_forces(self, list_meal, list_cells):
+        """:arg :   list_meal - type : list, each element is Meal type
+                    list_cells - type : list, each element is Cell type
+
+        Function calculates forces where cell will be move.
+                For peaceful cell it depends on how close the meal, how close predator to the cell and viscosity
+                 For predator cell it depends on how closw the victims (peaceful cells), viscosity"""
+
+        ''' for the predator cell. This block searches victims first of all in 100 radius, if there are nothing in
+         300 radius and 600 radius. It helps avoid a lot of calculations'''
+
         list_victim = [cell for cell in list_cells
                        if not cell.predator and vec_module(find_vector(self, cell)) <= 100]
+
         if len(list_victim) == 0:
             list_victim = [cell for cell in list_cells
                            if not cell.predator and vec_module(find_vector(self, cell)) <= 300]
@@ -107,6 +167,8 @@ class Cell:
             list_victim = [cell for cell in list_cells
                            if not cell.predator and vec_module(find_vector(self, cell)) <= 600]
 
+        ''' for the peaceful cell. This block searches meal first of all in 100 radius, if there are nothing in
+                 300 radius and 600 radius. It helps avoid a lot of calculations'''
         closest_meal = [meal for meal in list_meal
                         if vec_module(find_vector(self, meal)) <= 100]
         if len(closest_meal) == 0:
@@ -116,8 +178,9 @@ class Cell:
             closest_meal = [meal for meal in list_meal
                             if vec_module(find_vector(self, meal)) <= 600]
 
+        # for peaceful cell. It searches the nearest enemies
         list_predator = [cell for cell in list_cells if cell.predator
-                         and vec_module(find_vector(self, cell)) <= 200]
+                         and vec_module(find_vector(self, cell)) <= self.view_radius]
 
         # Calculating force of entire engine
         # Get direction vector to meal
@@ -156,10 +219,15 @@ class Cell:
         self.velocity += acceleration
 
     def multiply(self, list_cells):
-        """:arg     list_cells - list of cells"""
+        """:arg     list_cells - list of cells
+
+        Function returns new_cell if it could spawn or 0 if not."""
+
         global spawn  # variable to spawn
         spawn = True
-        new_cell = Cell()
+        new_cell = Cell()  # creates new cell
+
+        # predator multiply with predator :
         if self.predator:
             new_cell.predator = True
             new_cell.color = RED
@@ -167,6 +235,7 @@ class Cell:
             new_cell.satiety_step = 0.005
             new_cell.reproductive_age = [5, 50]
             new_cell.reproductive_waiting = 3
+
         phi = random.uniform(0, 2 * np.pi)  # random phi
         x = self.position[0] + 2 * self.size * np.cos(phi)  # x cor of center new cell
         y = self.position[1] + 2 * self.size * np.sin(phi)  # y cor of center new cell
@@ -186,6 +255,15 @@ class Cell:
 
 
 class Meal:
+    """Common class for all meal
+    attributes :
+            position - type : numpy array, position of the meal on the screen
+
+            size - type : int, size of the meal
+
+            richness - type : float (from 0 to 1), responsible how much peaceful cell will gets satiety when meal
+                                                                            will be eaten"""
+
     def __init__(self):
         self.position = np.array([random.uniform(0, 1) * SCREEN_WIDTH,
                                   random.uniform(0, 1) * SCREEN_HEIGHT])
@@ -193,4 +271,7 @@ class Meal:
         self.richness = random.uniform(0, 1)
 
     def eaten(self, cell):
+        """:arg :   cell - type : Cell, cell that can eat the meal
+
+        Function returns True or False, in case cell is close the meal. """
         return vec_module(find_vector(self, cell)) <= self.size + cell.size
