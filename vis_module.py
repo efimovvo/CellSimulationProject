@@ -104,7 +104,6 @@ def draw_graph(surface, starting_point, sizes, x_data, y_data, axis_comment, gra
     image_axis = pygame.Surface((sizes[0], sizes[1]), pygame.SRCALPHA)
     image_data = pygame.Surface((sizes[0] - 2 * offset, sizes[1] - 2 * offset))
     image_data.set_colorkey(BLACK)
-    image_data.set_alpha(255) # Предлагаю удалить, прозрачность не нужна
 
     # Axes X and Y accordingly
     pygame.draw.line(image_axis, AXES_COLOR,

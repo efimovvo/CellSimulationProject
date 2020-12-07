@@ -1,6 +1,9 @@
 from vis_module import *
 from actions_module import *
 from cells_classes_module import *
+from shutil import copyfile
+import datetime
+
 
 
 def restart_the_game():
@@ -150,5 +153,8 @@ def main():
 
 if __name__ == '__main__':
     main()
+    x = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+    a = 'data_' + str(x) + '.txt'
+    copyfile('data.txt', str(a))
     file = open('data.txt', 'w')
     file.close()
