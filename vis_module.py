@@ -1,4 +1,5 @@
 import pygame
+from in_out_module import *
 
 # Interface size
 
@@ -71,36 +72,9 @@ def draw_plot(surf):
     )
 
 
-def write_data(list_cells, time):
-    list_victim = [cell for cell in list_cells if not cell.predator]
-    list_predator = [cell for cell in list_cells if cell.predator]
-    if list_victim != 0:
-        with open('data.txt', 'a') as file:
-            cell_data = [str(len(list_victim)), str(len(list_predator)), str(time)]
-            cell_data = ' '.join(cell_data)
-            cell_data = cell_data + '\n'
-            file.write(cell_data)
-
-
-def read_data():
-    input_data = []
-    victims_list = []
-    predators_list = []
-    time = []
-    with open('data.txt', 'r') as file:
-        for line in file:
-            input_data.append(line.split())
-    for i in range(len(input_data)):
-        victims_list.append(int(input_data[i][0]))
-        predators_list.append(int(input_data[i][1]))
-        time.append(int(input_data[i][2]))
-
-    return victims_list, predators_list, time
-
-
-def draw_graph(surface, starting_point, sizes, x_data, y_data, x_scale = 500):
+def draw_graph(surface, starting_point, sizes, x_data, y_data, axis_comment, graph_name, x_scale = 500):
     # Parameters
-    offset = 30
+    offset = 50
     tick_length = 10
     number_of_ticks = [20, 10]
 
@@ -134,25 +108,56 @@ def draw_graph(surface, starting_point, sizes, x_data, y_data, x_scale = 500):
     # Ticks on axes X and Y accordingly
     font_surface = pygame.font.SysFont('verdana', 10)
     for i in range(number_of_ticks[0] + 1):
+        # Tick position on X axis
         x = offset + (sizes[0] - 2 * offset) * i / number_of_ticks[0]
         y = sizes[1] - offset
+        # Tick on X axis
         pygame.draw.line(image_axis, BLACK, (x, y), (x, y + tick_length))
-        tick_text = str(int(x_min + x_scale * i / number_of_ticks[0]))
-        tick_text_surface = font_surface.render(tick_text, True, BLACK)
-        surface.blit(tick_text_surface,
-                     (starting_point[0] + 0.9 * offset + (sizes[0] - 2 * offset) * i / number_of_ticks[0],
-                      starting_point[1] + sizes[1] - offset + tick_length))
+        # Number on X axis
+        text = str(int(x_min + x_scale * i / number_of_ticks[0]))
+        text_surface = font_surface.render(text, True, BLACK)
+        text_rect = text_surface.get_rect(
+            center=(starting_point[0] + x,
+                    starting_point[1] + y + 1.5 * tick_length))
+        surface.blit(text_surface, text_rect)
+    # Name of X axis
+    text_surface = font_surface.render(axis_comment[0], True, BLACK)
+    text_rect = text_surface.get_rect(
+        center=(starting_point[0] + sizes[0] // 2,
+                starting_point[1] + sizes[1] - offset + 3 * tick_length)
+    )
+    surface.blit(text_surface, text_rect)
     for i in range(number_of_ticks[1] + 1):
-        pygame.draw.line(image_axis, BLACK,
-                         (offset, offset + (sizes[1] - 2 * offset) * i / number_of_ticks[1]),
-                         (offset - 2 * tick_length,
-                          offset + (sizes[1] - 2 * offset) * i / number_of_ticks[1])
-                         )
-        tick_text = str(int(y_max - (y_max - y_min) * i / number_of_ticks[1]))
-        tick_text_surface = font_surface.render(tick_text, True, BLACK)
-        surface.blit(tick_text_surface,
-                     (starting_point[0],
-                      starting_point[1] + offset + (sizes[1] - 2 * offset) * i / number_of_ticks[1]))
+        # Tick position on Y axis
+        x = offset
+        y = offset + (sizes[1] - 2 * offset) * i / number_of_ticks[1]
+        # Tick on Y axis
+        pygame.draw.line(image_axis, BLACK, (x, y), (x - tick_length, y))
+        # Number on Y axis
+        text = str(int(y_max - (y_max - y_min) * i / number_of_ticks[1]))
+        text_surface = font_surface.render(text, True, BLACK)
+        text_rect = text_surface.get_rect(
+            center=(starting_point[0] + x - 2 * tick_length,
+                    starting_point[1] + y)
+        )
+        surface.blit(text_surface, text_rect)
+    # Name of Y axis
+    text_surface = font_surface.render(axis_comment[1], True, BLACK)
+    text_surface = pygame.transform.rotate(text_surface, 90)
+    text_rect = text_surface.get_rect(
+        center=(starting_point[0] + offset - 3.5 * tick_length,
+                starting_point[1] + sizes[1] // 2)
+    )
+    surface.blit(text_surface, text_rect)
+
+    # Graph name
+    font_surface = pygame.font.SysFont('verdana', 12)
+    text_surface = font_surface.render(graph_name, True, BLACK)
+    text_rect = text_surface.get_rect(
+        center=(starting_point[0] + sizes[0] // 2,
+                starting_point[1] + offset - 2 * tick_length)
+    )
+    surface.blit(text_surface, text_rect)
 
     for i in range(len(y_data)):
         line = []
