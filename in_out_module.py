@@ -1,6 +1,6 @@
 '''This module will contain functions for reading from file and
 for writing to file'''
-from shutil import copyfile
+from shutil import copyfile, move
 import datetime
 
 
@@ -68,7 +68,7 @@ def save_file():
     """
     x = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
     a = 'data_' + str(x) + '.txt'
-    shutil.copyfile('data.txt', str(a))
-    shutil.move(str(a), 'database')
+    copyfile('data.txt', str(a))
+    move(str(a), 'database')
     file = open('data.txt', 'w')
     file.close()
