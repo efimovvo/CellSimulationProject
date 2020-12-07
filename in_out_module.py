@@ -68,6 +68,7 @@ def save_file():
     """
     x = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
     a = 'data_' + str(x) + '.txt'
-    copyfile('data.txt', str(a))
+    shutil.copyfile('data.txt', str(a))
+    shutil.move(str(a), 'database')
     file = open('data.txt', 'w')
     file.close()
