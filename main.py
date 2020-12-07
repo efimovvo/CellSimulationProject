@@ -124,7 +124,11 @@ def main():
         # Draw interface objects
         draw_user_panel(screen, button_list)
         # Draw population data
-        victims_list, predators_list, time_list = read_data()
+        (time_list,
+         victims_list, predators_list,
+         victims_list_mid_age, predators_list_mid_age,
+         victims_list_mid_engine, predators_list_mid_engine,
+         victims_list_mid_satiety, predators_list_mid_satiety) = read_data()
         if len(time_list) > 0:
             draw_graph(screen,
                        starting_point=[SCREEN_WIDTH, PANEL_HEIGHT],
