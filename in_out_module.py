@@ -1,7 +1,20 @@
 '''This module will contain functions for reading from file and
 for writing to file'''
 
+
 def write_data(list_cells, time):
+    """ Function add line in data.txt file
+
+    Parameters
+    ----------
+    list_cells : list
+        list of cells
+    time : int
+        current time = step of modelling
+
+    Returns
+    ----------
+    """
     list_victim = [cell for cell in list_cells if not cell.predator]
     list_predator = [cell for cell in list_cells if cell.predator]
     if list_victim != 0:
@@ -13,6 +26,20 @@ def write_data(list_cells, time):
 
 
 def read_data():
+    """ Function reads data from data.txt file
+
+        Parameters
+        ----------
+
+        Returns
+        ----------
+        victims_list : list
+            list of victim population at the moments in time
+        predators_list : list
+            list of predator population at the moments in time
+        time : list
+            list of time moments
+        """
     input_data = []
     victims_list = []
     predators_list = []
