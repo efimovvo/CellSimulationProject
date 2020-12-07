@@ -1,7 +1,5 @@
 '''This module will contain functions for reading from file and
 for writing to file'''
-from shutil import copyfile
-import datetime
 
 
 def write_data(list_cells, time):
@@ -30,18 +28,18 @@ def write_data(list_cells, time):
 def read_data():
     """ Function reads data from data.txt file
 
-    Parameters
-    ----------
+        Parameters
+        ----------
 
-    Returns
-    ----------
-    victims_list : list
-        list of victim population at the moments in time
-    predators_list : list
-        list of predator population at the moments in time
-    time : list
-        list of time moments
-    """
+        Returns
+        ----------
+        victims_list : list
+            list of victim population at the moments in time
+        predators_list : list
+            list of predator population at the moments in time
+        time : list
+            list of time moments
+        """
     input_data = []
     victims_list = []
     predators_list = []
@@ -55,19 +53,3 @@ def read_data():
         time.append(int(input_data[i][2]))
 
     return victims_list, predators_list, time
-
-
-def save_file():
-    """ Function copy data.txt file to data_yyyy_mm_dd_hh_mm_ss.txt file
-
-    Parameters
-    ----------
-
-    Returns
-    ----------
-    """
-    x = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
-    a = 'data_' + str(x) + '.txt'
-    copyfile('data.txt', str(a))
-    file = open('data.txt', 'w')
-    file.close()
