@@ -43,16 +43,15 @@ class Button:
         self.position = position
         self.size = size
         self.text = text
-        self.active = False
+        self.status = 0
 
     def click(self):
-        if self.active:
-            self.active = False
-        else:
-            self.active = True
+        self.status += 1
+        self.status = self.status % 4
 
     def draw(self, surf):
-        color = DARK_GREY if self.active else WHITE
+        color_set = [WHITE, LIGHT_GREY, DARK_GREY, BLACK]
+        color = color_set[self.status]
         pygame.draw.rect(surf, color,
                          [self.position[0], self.position[1],
                           self.size[0], self.size[1]])

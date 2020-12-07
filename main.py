@@ -130,13 +130,38 @@ def main():
          victims_list_mid_engine, predators_list_mid_engine,
          victims_list_mid_satiety, predators_list_mid_satiety) = read_data()
         if len(time_list) > 0:
-            draw_graph(screen,
-                       starting_point=[SCREEN_WIDTH, PANEL_HEIGHT],
-                       sizes=[PLOT_AREA_WIDTH, SCREEN_HEIGHT // 2],
-                       x_data=time_list,
-                       y_data=[victims_list, predators_list],
-                       axis_comment=["Время, шаг симуляции", "Популяция, шт."],
-                       graph_name="График зависимости размера популяции от времени")
+            if button_list[0].status == 0:
+                draw_graph(screen,
+                           starting_point=[SCREEN_WIDTH, PANEL_HEIGHT],
+                           sizes=[PLOT_AREA_WIDTH, SCREEN_HEIGHT // 2],
+                           x_data=time_list,
+                           y_data=[victims_list, predators_list],
+                           axis_comment=["Время, шаг симуляции", "Популяция, шт."],
+                           graph_name="График зависимости размера популяции от времени")
+            elif button_list[0].status == 1:
+                draw_graph(screen,
+                           starting_point=[SCREEN_WIDTH, PANEL_HEIGHT],
+                           sizes=[PLOT_AREA_WIDTH, SCREEN_HEIGHT // 2],
+                           x_data=time_list,
+                           y_data=[victims_list_mid_age, predators_list_mid_age],
+                           axis_comment=["Время, шаг симуляции", "Средний возраст популяции, ед. возраста"],
+                           graph_name="График зависимости возраста популяции от времени")
+            elif button_list[0].status == 2:
+                draw_graph(screen,
+                           starting_point=[SCREEN_WIDTH, PANEL_HEIGHT],
+                           sizes=[PLOT_AREA_WIDTH, SCREEN_HEIGHT // 2],
+                           x_data=time_list,
+                           y_data=[victims_list_mid_engine, predators_list_mid_engine],
+                           axis_comment=["Время, шаг симуляции", "Средняя подвижность по популяции, ед. подвижности"],
+                           graph_name="График зависимости возраста популяции от времени")
+            else:
+                draw_graph(screen,
+                           starting_point=[SCREEN_WIDTH, PANEL_HEIGHT],
+                           sizes=[PLOT_AREA_WIDTH, SCREEN_HEIGHT // 2],
+                           x_data=time_list,
+                           y_data=[victims_list_mid_satiety, predators_list_mid_satiety],
+                           axis_comment=["Время, шаг симуляции", "Средняя сытость по популяции, % сытости"],
+                           graph_name="График зависимости возраста популяции от времени")
         if len(victims_list) > 0:
             draw_graph(screen,
                        starting_point=[SCREEN_WIDTH, PANEL_HEIGHT + SCREEN_HEIGHT // 2],

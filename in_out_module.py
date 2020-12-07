@@ -26,8 +26,8 @@ def write_data(list_cells, time):
     list_victim_engine = [cell.engines for cell in list_cells if not cell.predator]
     list_predator_engine = [cell.engines for cell in list_cells if cell.predator]
 
-    list_victim_satiety = [cell.satiety for cell in list_cells if not cell.predator]
-    list_predator_satiety = [cell.satiety for cell in list_cells if cell.predator]
+    list_victim_satiety = [cell.satiety * 100 for cell in list_cells if not cell.predator]
+    list_predator_satiety = [cell.satiety * 100 for cell in list_cells if cell.predator]
 
     if list_victim != 0:
         with open('data.txt', 'a') as file:
@@ -80,11 +80,11 @@ def read_data():
         victims_list.append(int(input_data[i][1]))
         predators_list.append(int(input_data[i][2]))
         victims_list_mid_age.append(float(input_data[i][3]))
-        predators_list_mid_age.append(float(input_data[i][3]))
-        victims_list_mid_engine.append(float(input_data[i][3]))
-        predators_list_mid_engine.append(float(input_data[i][3]))
-        victims_list_mid_satiety.append(float(input_data[i][3]))
-        predators_list_mid_satiety.append(float(input_data[i][3]))
+        predators_list_mid_age.append(float(input_data[i][4]))
+        victims_list_mid_engine.append(float(input_data[i][5]))
+        predators_list_mid_engine.append(float(input_data[i][6]))
+        victims_list_mid_satiety.append(float(input_data[i][7]))
+        predators_list_mid_satiety.append(float(input_data[i][8]))
 
     return (time_list,
             victims_list, predators_list,
