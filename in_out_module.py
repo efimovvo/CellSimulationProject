@@ -1,10 +1,6 @@
 '''This module will contain functions for reading from file and
 for writing to file'''
-<<<<<<< HEAD
 from shutil import copyfile, move
-=======
-import shutil
->>>>>>> e81c363c3e8d3b8028e500c0a2e058119716c41c
 import datetime
 
 
