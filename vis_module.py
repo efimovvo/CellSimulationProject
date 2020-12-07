@@ -1,4 +1,5 @@
 import pygame
+import numpy as np
 from in_out_module import *
 
 # Interface size
@@ -78,6 +79,15 @@ def draw_plot(surf):
         DARK_GREY,
         [SCREEN_WIDTH, PANEL_HEIGHT, PLOT_AREA_WIDTH, SCREEN_HEIGHT]
     )
+
+
+def interpolate_color(color_1, color_2, coefficient):
+    color_1 = np.array(color_1)
+    color_2 = np.array(color_2)
+    color = color_1 * coefficient + color_2 * (1 - coefficient)
+    color = [int(color_part) for color_part in color]
+
+    return tuple(color)
 
 
 def draw_graph(surface, starting_point, sizes, x_data, y_data, axis_comment, graph_name, x_scale = 500):
@@ -166,16 +176,24 @@ def draw_graph(surface, starting_point, sizes, x_data, y_data, axis_comment, gra
     )
     surface.blit(text_surface, text_rect)
 
+    color_set = [GREEN, RED]
     for i in range(len(y_data)):
         line = []
-        color = GREEN if i == 0 else RED
+        basic_color = color_set[i]
         for j in range(len(x_data)):
             line.append(((sizes[0] - 2 * offset) * (x_data[j] - x_min) / x_scale,
                          (sizes[1] - 2 * offset) * (1 - (y_data[i][j] - y_min) / y_max))
                         )
         if len(line) > 1:
-            pygame.draw.lines(image_data, color, False, line, 1)
-            pygame.draw.circle(image_data, color, line[-1], 3)
+            for j in range(10):
+                start = int(np.floor(len(line) * j / 10))
+                end = int(np.ceil(len(line) * (j + 1) / 10)) if j < 9 else len(line)
+                end = end + 1 if end == start and j < 9 else end - 1
+                start = end - 2 if start == end and j == 9 else start
+                line_segment = line[start:end + 1]
+                color = interpolate_color(basic_color, DARK_GREY, 0.2 + (j + 1) * 0.08)
+                pygame.draw.lines(image_data, color, False, line_segment, 1)
+            pygame.draw.circle(image_data, basic_color, line[-1], 3)
 
     surface.blit(image_axis,
                  (starting_point[0], starting_point[1]))
