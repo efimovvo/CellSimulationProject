@@ -25,6 +25,15 @@ RED = (204, 0, 0)
 GREEN = (0, 204, 0)
 BLUE = (0, 0, 204)
 
+# Fonts
+FONT = 'verdana'
+FONT_COLOR = WHITE
+FONT_SIZE_MIN = 10
+FONT_SIZE_MAX = 12
+
+# Axes
+AXES_COLOR = WHITE
+
 # Interface parameters
 FOOD_MAX_QUANTITY = 20
 
@@ -98,33 +107,33 @@ def draw_graph(surface, starting_point, sizes, x_data, y_data, axis_comment, gra
     image_data.set_alpha(255) # Предлагаю удалить, прозрачность не нужна
 
     # Axes X and Y accordingly
-    pygame.draw.line(image_axis, BLACK,
+    pygame.draw.line(image_axis, AXES_COLOR,
                      (offset, sizes[1] - offset),
                      (sizes[0] - offset, sizes[1] - offset))
-    pygame.draw.line(image_axis, BLACK,
+    pygame.draw.line(image_axis, AXES_COLOR,
                      (offset, offset),
                      (offset, sizes[1] - offset))
 
     # Ticks on axes X and Y accordingly
-    font_surface = pygame.font.SysFont('verdana', 10)
+    font_surface = pygame.font.SysFont(FONT, FONT_SIZE_MIN)
     for i in range(number_of_ticks[0] + 1):
         # Tick position on X axis
         x = offset + (sizes[0] - 2 * offset) * i / number_of_ticks[0]
         y = sizes[1] - offset
         # Tick on X axis
-        pygame.draw.line(image_axis, BLACK, (x, y), (x, y + tick_length))
+        pygame.draw.line(image_axis, AXES_COLOR, (x, y), (x, y + tick_length))
         # Number on X axis
         text = str(int(x_min + x_scale * i / number_of_ticks[0]))
-        text_surface = font_surface.render(text, True, BLACK)
+        text_surface = font_surface.render(text, True, FONT_COLOR)
         text_rect = text_surface.get_rect(
             center=(starting_point[0] + x,
-                    starting_point[1] + y + 1.5 * tick_length))
+                    starting_point[1] + y + 2 * tick_length))
         surface.blit(text_surface, text_rect)
     # Name of X axis
-    text_surface = font_surface.render(axis_comment[0], True, BLACK)
+    text_surface = font_surface.render(axis_comment[0], True, FONT_COLOR)
     text_rect = text_surface.get_rect(
         center=(starting_point[0] + sizes[0] // 2,
-                starting_point[1] + sizes[1] - offset + 3 * tick_length)
+                starting_point[1] + sizes[1] - offset + 3.5 * tick_length)
     )
     surface.blit(text_surface, text_rect)
     for i in range(number_of_ticks[1] + 1):
@@ -132,17 +141,17 @@ def draw_graph(surface, starting_point, sizes, x_data, y_data, axis_comment, gra
         x = offset
         y = offset + (sizes[1] - 2 * offset) * i / number_of_ticks[1]
         # Tick on Y axis
-        pygame.draw.line(image_axis, BLACK, (x, y), (x - tick_length, y))
+        pygame.draw.line(image_axis, AXES_COLOR, (x, y), (x - tick_length, y))
         # Number on Y axis
         text = str(int(y_max - (y_max - y_min) * i / number_of_ticks[1]))
-        text_surface = font_surface.render(text, True, BLACK)
+        text_surface = font_surface.render(text, True, FONT_COLOR)
         text_rect = text_surface.get_rect(
             center=(starting_point[0] + x - 2 * tick_length,
                     starting_point[1] + y)
         )
         surface.blit(text_surface, text_rect)
     # Name of Y axis
-    text_surface = font_surface.render(axis_comment[1], True, BLACK)
+    text_surface = font_surface.render(axis_comment[1], True, FONT_COLOR)
     text_surface = pygame.transform.rotate(text_surface, 90)
     text_rect = text_surface.get_rect(
         center=(starting_point[0] + offset - 3.5 * tick_length,
@@ -151,8 +160,8 @@ def draw_graph(surface, starting_point, sizes, x_data, y_data, axis_comment, gra
     surface.blit(text_surface, text_rect)
 
     # Graph name
-    font_surface = pygame.font.SysFont('verdana', 12)
-    text_surface = font_surface.render(graph_name, True, BLACK)
+    font_surface = pygame.font.SysFont(FONT, FONT_SIZE_MAX)
+    text_surface = font_surface.render(graph_name, True, FONT_COLOR)
     text_rect = text_surface.get_rect(
         center=(starting_point[0] + sizes[0] // 2,
                 starting_point[1] + offset - 2 * tick_length)

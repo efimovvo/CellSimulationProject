@@ -108,7 +108,7 @@ def main():
                        x_data=time_list,
                        y_data=[victims_list, predators_list],
                        axis_comment=["Время, шаг симуляции", "Популяция, шт."],
-                       graph_name="График зависимости размера популяции P от времени t")
+                       graph_name="График зависимости размера популяции от времени")
         if len(victims_list) > 0:
             draw_graph(screen,
                        starting_point=[SCREEN_WIDTH, PANEL_HEIGHT + SCREEN_HEIGHT // 2],
