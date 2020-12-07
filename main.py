@@ -73,10 +73,8 @@ def find_button(positon, button_list):
                 button_list - type : list, list of different buttons
     Function activates the button if it is clicked"""
     for button in button_list:
-        if (positon[0] >= button.position[0]
-                and positon[0] <= button.position[0] + button.size[0]
-                and positon[1] >= button.position[1]
-                and positon[1] <= button.position[1] + button.size[1]):
+        if (button.position[0] <= positon[0] <= button.position[0] + button.size[0]
+                and button.position[1] <= positon[1] <= button.position[1] + button.size[1]):
             button.click()
 
 
@@ -127,17 +125,23 @@ def main():
         draw_user_panel(screen, button_list)
         # Draw population data
         victims_list, predators_list, time_list = read_data()
-        draw_graph(screen,
-                   starting_point=[SCREEN_WIDTH, PANEL_HEIGHT],
-                   sizes=[PLOT_AREA_WIDTH, SCREEN_HEIGHT // 2],
-                   x_data=time_list,
-                   y_data=[victims_list, predators_list])
-        draw_graph(screen,
-                   starting_point=[SCREEN_WIDTH, PANEL_HEIGHT + SCREEN_HEIGHT // 2],
-                   sizes=[PLOT_AREA_WIDTH, SCREEN_HEIGHT // 2],
-                   x_data=predators_list,
-                   y_data=[victims_list],
-                   x_scale=10 * (max(predators_list) // 10 + 1))
+        if len(time_list) > 0:
+            draw_graph(screen,
+                       starting_point=[SCREEN_WIDTH, PANEL_HEIGHT],
+                       sizes=[PLOT_AREA_WIDTH, SCREEN_HEIGHT // 2],
+                       x_data=time_list,
+                       y_data=[victims_list, predators_list],
+                       axis_comment=["Время, шаг симуляции", "Популяция, шт."],
+                       graph_name="График зависимости размера популяции от времени")
+        if len(victims_list) > 0:
+            draw_graph(screen,
+                       starting_point=[SCREEN_WIDTH, PANEL_HEIGHT + SCREEN_HEIGHT // 2],
+                       sizes=[PLOT_AREA_WIDTH, SCREEN_HEIGHT // 2],
+                       x_data=victims_list,
+                       y_data=[predators_list],
+                       axis_comment=["Популяция жертв, шт.", "Популяция хищников, шт."],
+                       graph_name="Фазовая диаграмма: зависимость популяции хищников от популяции жертв",
+                       x_scale=10 * (max(victims_list) // 10 + 1))
         # Update the screen
         pygame.display.flip()
 
