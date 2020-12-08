@@ -185,13 +185,12 @@ def draw_graph(surface, starting_point, sizes, x_data, y_data, axis_comment, gra
                          (sizes[1] - 2 * offset) * (1 - (y_data[i][j] - y_min) / y_max))
                         )
         if len(line) > 1:
-            for j in range(10):
-                start = int(np.floor(len(line) * j / 10))
-                end = int(np.ceil(len(line) * (j + 1) / 10)) if j < 9 else len(line)
-                end = end + 1 if end == start and j < 9 else end - 1
-                start = end - 2 if start == end and j == 9 else start
+            color_steps = min(len(line) - 1, 10)
+            for j in range(color_steps):
+                start = int(np.floor(len(line) * j / color_steps))
+                end = int(np.ceil(len(line) * (j + 1) / color_steps))
                 line_segment = line[start:end + 1]
-                color = interpolate_color(basic_color, DARK_GREY, 0.2 + (j + 1) * 0.08)
+                color = interpolate_color(basic_color, DARK_GREY, 0.2 + (j + 1) * 0.8 / color_steps)
                 pygame.draw.lines(image_data, color, False, line_segment, 1)
             pygame.draw.circle(image_data, basic_color, line[-1], 3)
 
