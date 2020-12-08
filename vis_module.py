@@ -1,6 +1,5 @@
 import pygame
 import numpy as np
-from in_out_module import *
 
 # Interface size
 
@@ -90,7 +89,7 @@ def interpolate_color(color_1, color_2, coefficient):
     return tuple(color)
 
 
-def draw_graph(surface, starting_point, sizes, x_data, y_data, axis_comment, graph_name, x_scale = 500):
+def draw_graph(surface, starting_point, sizes, x_data, y_data, axis_comment, graph_name, x_scale=500):
     # Parameters
     offset = 50
     tick_length = 10
@@ -201,12 +200,10 @@ def draw_graph(surface, starting_point, sizes, x_data, y_data, axis_comment, gra
 
 
 def draw_cells(list_cells, surface):
+    """ Function draws a cells on the surface.
+    :param surface: pygame.Surface : surface for drawing
+    :param list_cells : list(Cell) : list of cells
     """
-    :arg    list_cells - list of cells, list
-            surf - surface where cells will be drawn
-            color - color of cells, type : tuple
-
-    Function draws a cells on the surface."""
     for cell in list_cells:
         position = [cell.position[0], cell.position[1] + PANEL_HEIGHT]
         cell.border_color = (102 + cell.satiety * 153, 102 + cell.satiety * 153, 102 + cell.satiety * 153)
