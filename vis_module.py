@@ -38,6 +38,24 @@ AXES_COLOR = WHITE
 FOOD_MAX_QUANTITY = 20
 
 
+class FoodQuantity():
+    def __init__(self, position, size):
+        global FOOD_MAX_QUANTITY
+        self.position = position
+        self.size = size
+        self.text = FOOD_MAX_QUANTITY
+
+    def draw(self, surf):
+        pygame.draw.rect(surf, WHITE, [self.position[0], self.position[1],
+                                       self.size[0], self.size[1]])
+        font_surface = pygame.font.SysFont(FONT, FONT_SIZE_MIN)
+        text_surface = font_surface.render(str(self.text), True, BLACK)
+        text_rect = text_surface.get_rect(
+            center=(self.position[0] + self.size[0] // 2,
+                    self.position[1] + self.size[1] // 2))
+        surf.blit(text_surface, text_rect)
+
+
 class Button:
     def __init__(self, position, size, text):
         self.position = position
@@ -47,7 +65,11 @@ class Button:
 
     def click(self):
         self.status += 1
-        self.status = self.status % 4
+        if self.text == 'Button':
+            self.status = self.status % 4
+        else:
+            self.status = self.status % 2
+            self.max_food()
 
     def draw(self, surf):
         color_set = [WHITE, LIGHT_GREY, DARK_GREY, BLACK]
@@ -55,6 +77,24 @@ class Button:
         pygame.draw.rect(surf, color,
                          [self.position[0], self.position[1],
                           self.size[0], self.size[1]])
+
+        font_surface = pygame.font.SysFont(FONT, FONT_SIZE_MIN)
+        text_surface = font_surface.render(str(self.text), True, BLACK)
+        text_rect = text_surface.get_rect(
+            center=(self.position[0] + self.size[0] // 2,
+                    self.position[1] + self.size[1] // 2))
+        surf.blit(text_surface, text_rect)
+
+    def max_food(self):
+        global FOOD_MAX_QUANTITY
+        if self.text == '-':
+            FOOD_MAX_QUANTITY -= 2
+        if self.text == '+':
+            FOOD_MAX_QUANTITY += 2
+
+
+def food_max_quantity():
+    return FOOD_MAX_QUANTITY
 
 
 def clean_screen(surf):
@@ -71,6 +111,11 @@ def draw_user_panel(surf, button_list):
     for button in button_list:
         button.draw(surf)
 
+    index_quantity = FoodQuantity([button_list[1].position[0] + button_list[1].size[0] + 5,
+                                   button_list[0].position[1]], [button_list[0].size[0],
+                                                                 0.5*button_list[0].size[1]])
+    index_quantity.draw(surf)
+
 
 def draw_plot(surf):
     pygame.draw.rect(
@@ -80,7 +125,7 @@ def draw_plot(surf):
     )
 
 
-def draw_graph(surface, starting_point, sizes, x_data, y_data, axis_comment, graph_name, x_scale = 500):
+def draw_graph(surface, starting_point, sizes, x_data, y_data, axis_comment, graph_name, x_scale=500):
     # Parameters
     offset = 50
     tick_length = 10

@@ -80,7 +80,14 @@ def find_button(positon, button_list):
 
 def main():
     """Main function of program. It creates a screen where cells lives and makes an actions with them"""
-    button_list = [Button([10, 10], [10, 10], 'Button')]  # creates a button list
+    offset = 10
+    button_graph = Button([offset, offset], [50, PANEL_HEIGHT - 2 * offset], 'Button')
+    button_decrease = Button([button_graph.position[0] + button_graph.size[0] + 10, button_graph.position[1]],
+                             [0.5 * button_graph.size[0], 0.5 * button_graph.size[1]], '-')
+    button_increase = Button([button_graph.position[0] + 2 * button_graph.size[0] + 20 + button_decrease.size[0],
+                              button_graph.position[1]], [0.5 * button_graph.size[0], 0.5 * button_graph.size[1]], '+')
+
+    button_list = [button_graph, button_decrease, button_increase]  # creates a button list
     cell_list, meal_list = restart_the_game()  # creates the cells and the meal lists
     time = 0
     pygame.init()
@@ -110,7 +117,7 @@ def main():
                     add_predator([event.pos[0], event.pos[1] - PANEL_HEIGHT], cell_list)
 
         # Update all date for one time step
-        if len(meal_list) < FOOD_MAX_QUANTITY:
+        if len(meal_list) < food_max_quantity():
             meal_list.append(Meal())
         multiply(cell_list, time)
         update(cell_list, meal_list, time)
@@ -171,6 +178,7 @@ def main():
                        axis_comment=["Популяция жертв, шт.", "Популяция хищников, шт."],
                        graph_name="Фазовая диаграмма: зависимость популяции хищников от популяции жертв",
                        x_scale=10 * (max(victims_list) // 10 + 1))
+
         # Update the screen
         pygame.display.flip()
 
