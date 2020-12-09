@@ -1,5 +1,5 @@
 import pygame
-from in_out_module import *
+import numpy as np
 
 # Interface size
 
@@ -38,7 +38,7 @@ AXES_COLOR = WHITE
 FOOD_MAX_QUANTITY = 20
 
 
-class FoodQuantity():
+class FoodQuantity:
     def __init__(self, position, size):
         global FOOD_MAX_QUANTITY
         self.position = position
@@ -123,6 +123,15 @@ def draw_plot(surf):
         DARK_GREY,
         [SCREEN_WIDTH, PANEL_HEIGHT, PLOT_AREA_WIDTH, SCREEN_HEIGHT]
     )
+
+
+def interpolate_color(color_1, color_2, coefficient):
+    color_1 = np.array(color_1)
+    color_2 = np.array(color_2)
+    color = color_1 * coefficient + color_2 * (1 - coefficient)
+    color = [int(color_part) for color_part in color]
+
+    return tuple(color)
 
 
 def draw_graph(surface, starting_point, sizes, x_data, y_data, axis_comment, graph_name, x_scale=500):
@@ -211,16 +220,23 @@ def draw_graph(surface, starting_point, sizes, x_data, y_data, axis_comment, gra
     )
     surface.blit(text_surface, text_rect)
 
+    color_set = [GREEN, RED]
     for i in range(len(y_data)):
         line = []
-        color = GREEN if i == 0 else RED
+        basic_color = color_set[i]
         for j in range(len(x_data)):
             line.append(((sizes[0] - 2 * offset) * (x_data[j] - x_min) / x_scale,
                          (sizes[1] - 2 * offset) * (1 - (y_data[i][j] - y_min) / y_max))
                         )
         if len(line) > 1:
-            pygame.draw.lines(image_data, color, False, line, 1)
-            pygame.draw.circle(image_data, color, line[-1], 3)
+            color_steps = min(len(line) - 1, 10)
+            for j in range(color_steps):
+                start = int(np.floor(len(line) * j / color_steps))
+                end = int(np.ceil(len(line) * (j + 1) / color_steps))
+                line_segment = line[start:end + 1]
+                color = interpolate_color(basic_color, DARK_GREY, 0.2 + (j + 1) * 0.8 / color_steps)
+                pygame.draw.lines(image_data, color, False, line_segment, 1)
+            pygame.draw.circle(image_data, basic_color, line[-1], 3)
 
     surface.blit(image_axis,
                  (starting_point[0], starting_point[1]))
@@ -229,12 +245,10 @@ def draw_graph(surface, starting_point, sizes, x_data, y_data, axis_comment, gra
 
 
 def draw_cells(list_cells, surface):
+    """ Function draws a cells on the surface.
+    :param surface: pygame.Surface : surface for drawing
+    :param list_cells : list(Cell) : list of cells
     """
-    :arg    list_cells - list of cells, list
-            surf - surface where cells will be drawn
-            color - color of cells, type : tuple
-
-    Function draws a cells on the surface."""
     for cell in list_cells:
         position = [cell.position[0], cell.position[1] + PANEL_HEIGHT]
         cell.border_color = (102 + cell.satiety * 153, 102 + cell.satiety * 153, 102 + cell.satiety * 153)
