@@ -28,8 +28,8 @@ BLUE = (0, 0, 204)
 # Fonts
 FONT = 'verdana'
 FONT_COLOR = WHITE
-FONT_SIZE_MIN = 10
-FONT_SIZE_MAX = 12
+FONT_SIZE_MIN = 12
+FONT_SIZE_MAX = 14
 
 # Axes
 AXES_COLOR = WHITE
@@ -39,13 +39,22 @@ FOOD_MAX_QUANTITY = 20
 
 
 class FoodQuantity:
-    def __init__(self, position, size):
-        global FOOD_MAX_QUANTITY
+    """class for food quantity.
+        attributes :
+                position - type : list, position
+                size - type : int, size
+                text - type : string or int or float, text of food quantity
+    """
+    def __init__(self, position, size, quantity):
         self.position = position
         self.size = size
-        self.text = FOOD_MAX_QUANTITY
+        self.text = quantity
 
     def draw(self, surf):
+        """arg :    surf - surface where it will de drawn
+
+        Function draws food quantity on the screen
+        """
         pygame.draw.rect(surf, WHITE, [self.position[0], self.position[1],
                                        self.size[0], self.size[1]])
         font_surface = pygame.font.SysFont(FONT, FONT_SIZE_MIN)
@@ -57,40 +66,58 @@ class FoodQuantity:
 
 
 class Button:
+    """Button class :
+        attributes :
+            position - type : list, position of button
+            size - type : list, size of button
+            text - type : string, text on the button
+            switch - type : bool, is it button switch or no
+    """
     def __init__(self, position, size, text):
         self.position = position
         self.size = size
         self.text = text
         self.status = 0
+        self.switch = False
 
     def click(self):
+        """Function changes status of button"""
         self.status += 1
-        if self.text == 'Button':
-            self.status = self.status % 4
-        else:
-            self.status = self.status % 2
-            self.max_food()
+        self.status = self.status % 4
 
     def draw(self, surf):
-        color_set = [WHITE, LIGHT_GREY, DARK_GREY, BLACK]
-        color = color_set[self.status]
-        pygame.draw.rect(surf, color,
-                         [self.position[0], self.position[1],
-                          self.size[0], self.size[1]])
+        """:arg :   surf - surface where button will be drawn
 
+        Function draws button on the screen"""
+
+        color_set = [WHITE, LIGHT_GREY, DARK_GREY, BLACK]
+        # changes color if button not switch
+        if not self.switch:
+            color = color_set[self.status]
+        else:
+            # color is constant for switch buttons
+            color = WHITE
+
+        pygame.draw.rect(surf, color,
+                        [self.position[0], self.position[1],
+                        self.size[0], self.size[1]])
         font_surface = pygame.font.SysFont(FONT, FONT_SIZE_MIN)
         text_surface = font_surface.render(str(self.text), True, BLACK)
         text_rect = text_surface.get_rect(
             center=(self.position[0] + self.size[0] // 2,
-                    self.position[1] + self.size[1] // 2))
+                        self.position[1] + self.size[1] // 2))
         surf.blit(text_surface, text_rect)
 
-    def max_food(self):
-        global FOOD_MAX_QUANTITY
-        if self.text == '-':
-            FOOD_MAX_QUANTITY -= 2
-        if self.text == '+':
-            FOOD_MAX_QUANTITY += 2
+
+def change_food_max_quantity(status):
+    """:arg : status - type : int, status of button
+
+        Function changes max food amount"""
+    global FOOD_MAX_QUANTITY
+    if status == 1:
+        FOOD_MAX_QUANTITY += 2
+    else:
+        FOOD_MAX_QUANTITY -= 2
 
 
 def food_max_quantity():
@@ -101,7 +128,35 @@ def clean_screen(surf):
     surf.fill(DARK_GREY)
 
 
-def draw_user_panel(surf, button_list):
+def draw_age_step(surf, cell):
+    """:arg :   surf - surface where age step will be drawn
+                cell - type : Cell, cell
+
+    Function draws age step of cells on the surf
+    """
+    text_obj = pygame.font.Font(None, 20)
+    text_age_step = text_obj.render('age step : {}'.format(round(cell.age_step, 3)), True, BLACK)
+    surf.blit(text_age_step, [800, 10])
+
+
+def draw_multiply_skill(surf, cell):
+    """:arg :   surf - surface where multiply skill will be drawn
+                    cell - type : Cell, cell
+
+        Function draws multiply skill of cells on the surf
+    """
+    text_obj = pygame.font.Font(None, 20)
+    text_age_step = text_obj.render('multiply skill : {}'.format(round(cell.multiply_skill, 2)), True, BLACK)
+    surf.blit(text_age_step, [950, 10])
+
+
+def draw_user_panel(surf, button_list, cell):
+    """:arg :   surf - surface where user panel will be drawn
+                button_list - type : list, each element is Button type
+                cell - type : Cell
+
+    Function draws user panel on the screen with all buttons
+    """
     pygame.draw.rect(
         surf,
         LIGHT_GREY,
@@ -113,8 +168,11 @@ def draw_user_panel(surf, button_list):
 
     index_quantity = FoodQuantity([button_list[1].position[0] + button_list[1].size[0] + 5,
                                    button_list[0].position[1]], [button_list[0].size[0],
-                                                                 0.5*button_list[0].size[1]])
+                                                                 0.5*button_list[0].size[1]], FOOD_MAX_QUANTITY)
     index_quantity.draw(surf)
+
+    draw_age_step(surf, cell)
+    draw_multiply_skill(surf, cell)
 
 
 def draw_plot(surf):
@@ -135,6 +193,16 @@ def interpolate_color(color_1, color_2, coefficient):
 
 
 def draw_graph(surface, starting_point, sizes, x_data, y_data, axis_comment, graph_name, x_scale=500):
+    """:arg :   surface - surface where graph will be drawn
+                starting_points - type : list, the starting point of graph
+                sizes - type : list, size of graph
+                x_data - type : list, data on x axis
+                y_data - type : list, data on y axis
+                axis_comment - type: list, each element is string
+                graph_name - type : string, name of graph
+
+    Function draws graph on the surface
+    """
     # Parameters
     offset = 50
     tick_length = 10
