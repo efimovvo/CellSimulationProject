@@ -29,7 +29,7 @@ def write_data(list_cells, time):
     list_victim_satiety = [cell.satiety * 100 for cell in list_cells if not cell.predator]
     list_predator_satiety = [cell.satiety * 100 for cell in list_cells if cell.predator]
 
-    if list_victim != 0:
+    if len(list_victim) > 0 and len(list_predator) > 0:
         with open('data.txt', 'a') as file:
             cell_data = [str(time),
                          str(len(list_victim)),
