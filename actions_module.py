@@ -1,5 +1,6 @@
 from cells_classes_module import *
 from in_out_module import *
+from vis_module import *
 import numpy as np
 
 ind = None
@@ -8,6 +9,35 @@ ind = None
 def probability_to_multiply():
     """Function returns float from (0, 1) """
     return random.uniform(0, 1)
+
+
+def change_age_step(list_cell, status):
+    """:arg :   list_cell - type : list, each element Cell type
+                status - type : int, status of button
+
+    Function changes age step.
+    """
+    if status == 1:
+        delta = 0.001
+    else:
+        delta = -0.001
+    for i in range(len(list_cell)):
+        list_cell[i].age_step += delta
+
+
+def change_multiply_skill(list_cells, status):
+    """:arg :   list_cell - type : list, each element Cell type
+                   status - type : int, status of button
+
+       Function changes multiply skill.
+    """
+    if status == 1:
+        delta = 0.02
+    else:
+        delta = -0.02
+    for i in range(len(list_cells)):
+        list_cells[i].multiply_skill += delta
+
 
 
 def kill_the_cell(list_cell, cell, time):
