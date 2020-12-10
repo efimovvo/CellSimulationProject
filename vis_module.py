@@ -45,23 +45,22 @@ SATIETY_STEP = 0.003
 
 
 class FoodQuantity:
+<<<<<<< Updated upstream
     """class for food quantity.
         attributes :
                 position - type : list, position
                 size - type : int, size
                 text - type : string or int or float, text of food quantity
     """
-    #Trofimov
-    '''def __init__(self, position, size, quantity):
+    def __init__(self, position, size, quantity):
         self.position = position
         self.size = size
-        self.text = quantity'''
-
+        self.text = quantity
+=======
     def __init__(self, position, size, function):
         self.position = position
         self.size = size
         self.function = function
-        self.text = ''
         if self.function == 'meal_quantity':
             self.text = FOOD_MAX_QUANTITY
         if self.function == 'comment_meal':
@@ -87,6 +86,7 @@ class Satiety:
             self.text = SATIETY_STEP
         if self.function == 'comment_satiety_step':
             self.text = 'Шаг изм-я сытости'
+>>>>>>> Stashed changes
 
     def draw(self, surf):
         """arg :    surf - surface where it will de drawn
@@ -104,6 +104,7 @@ class Satiety:
 
 
 class Button:
+<<<<<<< Updated upstream
     """Button class :
         attributes :
             position - type : list, position of button
@@ -111,23 +112,23 @@ class Button:
             text - type : string, text on the button
             switch - type : bool, is it button switch or no
     """
-    #Trofimov
-    '''def __init__(self, position, size, text):'''
-    '''self.switch = False'''
+    def __init__(self, position, size, text):
+=======
     def __init__(self, position, size, function, text):
+>>>>>>> Stashed changes
         self.position = position
         self.size = size
         self.text = text
         self.status = 0
-        self.function = function
+<<<<<<< Updated upstream
         self.switch = False
 
     def click(self):
         """Function changes status of button"""
         self.status += 1
         self.status = self.status % 4
-    #Trofimov
-    '''def draw(self, surf):
+
+    def draw(self, surf):
         """:arg :   surf - surface where button will be drawn
 
         Function draws button on the screen"""
@@ -138,7 +139,9 @@ class Button:
             color = color_set[self.status]
         else:
             # color is constant for switch buttons
-            color = WHITE'''
+            color = WHITE
+=======
+        self.function = function
 
     def click(self):
         number_graph = ['№1', '№2', '№3', '№4']
@@ -158,23 +161,24 @@ class Button:
         if self.function == 'restart':
             pass
 
+
     def draw(self, surf):
-        color_set = [WHITE, LIGHT_GREY, DARK_GREY, BLACK]
-        # changes color if button not switch
-        if not self.switch:
-            color = color_set[self.status]
-        else:
-            # color is constant for switch buttons
-            color = WHITE
+        pygame.draw.rect(surf, WHITE,
+                         [self.position[0], self.position[1],
+                          self.size[0], self.size[1]])
+>>>>>>> Stashed changes
+
         pygame.draw.rect(surf, color,
                         [self.position[0], self.position[1],
-                         self.size[0], self.size[1]])
+                        self.size[0], self.size[1]])
         font_surface = pygame.font.SysFont(FONT, FONT_SIZE_MIN)
         text_surface = font_surface.render(str(self.text), True, BLACK)
         text_rect = text_surface.get_rect(
             center=(self.position[0] + self.size[0] // 2,
                         self.position[1] + self.size[1] // 2))
         surf.blit(text_surface, text_rect)
+
+<<<<<<< Updated upstream
 
 def change_food_max_quantity(status):
     """:arg : status - type : int, status of button
@@ -185,7 +189,7 @@ def change_food_max_quantity(status):
         FOOD_MAX_QUANTITY += 2
     else:
         FOOD_MAX_QUANTITY -= 2
-
+=======
     def max_food(self):
         global FOOD_MAX_QUANTITY
         if self.function == 'decrease_meal':
@@ -194,6 +198,7 @@ def change_food_max_quantity(status):
                 FOOD_MAX_QUANTITY += 2
         if self.function == 'increase_meal':
             FOOD_MAX_QUANTITY += 2
+>>>>>>> Stashed changes
 
     def satiety_step(self):
         global SATIETY_STEP
@@ -255,11 +260,12 @@ def draw_user_panel(surf, button_list, cell):
     for button in button_list:
         button.draw(surf)
 
+<<<<<<< Updated upstream
     index_quantity = FoodQuantity([button_list[1].position[0] + button_list[1].size[0] + 5,
                                    button_list[0].position[1]], [button_list[0].size[0],
                                                                  0.5*button_list[0].size[1]], FOOD_MAX_QUANTITY)
     index_quantity.draw(surf)
-
+=======
     meal_quantity = FoodQuantity([button_list[1].position[0] + button_list[1].size[0] + 0.5 * BUTTON_DISTANCE,
                                   button_list[0].position[1] + 0.5 * button_list[0].size[1]],
                                  [button_list[0].size[0], 0.5 * button_list[0].size[1]], 'meal_quantity')
@@ -281,6 +287,7 @@ def draw_user_panel(surf, button_list, cell):
                                                                   + satiety_step.size[0] + button_list[4].size[0],
                                                                   0.4 * button_list[0].size[1]], 'comment_satiety_step')
     comment_satiety_step.draw(surf)
+>>>>>>> Stashed changes
 
     draw_age_step(surf, cell)
     draw_multiply_skill(surf, cell)
