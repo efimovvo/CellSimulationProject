@@ -1,6 +1,7 @@
 import unittest
 from actions_module import *
 from vis_module import *
+from main import user_parameters
 
 
 class ProgramTests(unittest.TestCase):
@@ -17,8 +18,8 @@ class ProgramTests(unittest.TestCase):
 
         # create 2 cells :
 
-        cell1 = Cell()
-        cell2 = Cell()
+        cell1 = Cell(1, 0.8, 1)
+        cell2 = Cell(1, 0.8, 1)
         # gives positions :
 
         cell1.position = np.array([10, 10])
@@ -36,12 +37,13 @@ class ProgramTests(unittest.TestCase):
         It is OK if new cell spawns not nest to mother cell"""
 
         # mother cell :
-        cell = Cell()
+        parameters = user_parameters()
+        cell = Cell(1, 0.8, 1)
         list_cell = [cell]
         # creates new cell until it will be Cell type :
-        new_cell = cell.multiply(list_cell)
+        new_cell = cell.multiply(list_cell, parameters)
         while new_cell == 0:
-            new_cell = cell.multiply(list_cell)
+            new_cell = cell.multiply(list_cell, parameters)
 
         distance = vec_module(find_vector(new_cell, cell))
         # final :
@@ -50,7 +52,7 @@ class ProgramTests(unittest.TestCase):
     def test_change_age_step(self):
         """Tests change_age_step function"""
 
-        cell = Cell()
+        cell = Cell(1, 0.8, 1)
         age_step = cell.age_step
         list_cell = [cell]
         # change step increases :
@@ -59,12 +61,12 @@ class ProgramTests(unittest.TestCase):
 
         # change step decreases
         change_age_step(list_cell, 2)
-        self.assertEqual(cell.age_step, age_step)
+        self.assertTrue(abs(cell.age_step - age_step) <= 10**-4)
 
     def test_change_multiply_skill(self):
         """Function tests change_multiply_skill function"""
 
-        cell = Cell()
+        cell = Cell(0.003, 0.8, 0.3)
         multiply_skill = cell.multiply_skill
         list_cell = [cell]
         # multiply skill increase
@@ -83,8 +85,8 @@ class ProgramTests(unittest.TestCase):
             print('', file=data_file)
 
         # create 2 different cells :
-        cell = Cell()
-        cell_predator = Cell()
+        cell = Cell(1, 0.8, 1)
+        cell_predator = Cell(1, 0.8, 1)
         cell.predator = True
         list_cell = [cell, cell_predator]
 
@@ -114,8 +116,8 @@ class ProgramTests(unittest.TestCase):
         """Function tests kill_the_cell function"""
 
         # create two cells and add to the list:
-        cell1 = Cell()
-        cell2 = Cell()
+        cell1 = Cell(1, 0.8, 1)
+        cell2 = Cell(1, 0.8, 1)
         list_cell = [cell1, cell2]
         # kill cell1
         kill_the_cell(list_cell, cell1, 1)
@@ -127,13 +129,14 @@ class ProgramTests(unittest.TestCase):
         """Function tests born_the_cell function"""
 
         # creates mother cell :
-        cell = Cell()
+        paramters = user_parameters()
+        cell = Cell(1, 0.8, 1)
         list_cell = [cell]
 
         # add new cell
-        new_cell = cell.multiply(list_cell)
+        new_cell = cell.multiply(list_cell, paramters)
         while new_cell == 0:
-            new_cell = cell.multiply(list_cell)
+            new_cell = cell.multiply(list_cell, paramters)
 
         # call function
         born_the_cell(list_cell, new_cell, 1)
