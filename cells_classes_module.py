@@ -111,7 +111,7 @@ class Cell:
         self.velocity = np.array([1.0, 1.0])
         # Genetic code
         self.satiety = 1.0  # сытость
-        self.satiety_step = 0.003
+        self.satiety_step = satiety_step()
         self.engines = 3 + (3 * random.random() - 1.5)**3
         self.reproductive_age = [5, 80]
         self.age_step = 0.03

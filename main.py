@@ -87,6 +87,7 @@ def buttons():
     """Function returns list of buttons"""
 
     offset = 10
+<<<<<<< Updated upstream
     # change graph button :
     button_graph = Button([offset, offset], [100, PANEL_HEIGHT - 2 * offset], 'Change graph')
 
@@ -202,6 +203,31 @@ def cells_parameters(list_cell, button_list):
 def main():
     """Main function of program. It creates a screen where cells lives and makes an actions with them"""
     button_list = buttons()  # creates a button list
+=======
+    button_graph = Button([offset, offset], [50, PANEL_HEIGHT - 2 * offset], 'graph', '№1')
+    button_decrease_meal = Button([button_graph.position[0] + button_graph.size[0] + BUTTON_DISTANCE,
+                                   button_graph.position[1] + 0.5 * button_graph.size[1]],
+                                  [0.5 * button_graph.size[0], 0.5 * button_graph.size[1]], 'decrease_meal', '-')
+    button_increase_meal = Button([button_graph.position[0] + 2 * button_graph.size[0] + 2 * BUTTON_DISTANCE
+                                   + button_decrease_meal.size[0], button_graph.position[1] + 0.5 * button_graph.size[1]
+                                   ], [0.5 * button_graph.size[0], 0.5 * button_graph.size[1]], 'increase_meal', '+')
+
+    button_decrease_satiety = Button([button_graph.position[0] + 3 * button_graph.size[0] + 3 * BUTTON_DISTANCE,
+                                      button_graph.position[1] + 0.5 * button_graph.size[1]],
+                                     [0.5 * button_graph.size[0], 0.5 * button_graph.size[1]], 'decrease_satiety', '-')
+    button_increase_satiety = Button([button_graph.position[0] + 4.5 * button_graph.size[0] + 4 * BUTTON_DISTANCE,
+                                      button_graph.position[1] + 0.5 * button_graph.size[1]],
+                                     [0.5 * button_graph.size[0], 0.5 * button_graph.size[1]], 'increase_satiety', '+')
+
+    button_pause = Button([button_graph.position[0] + 5 * button_graph.size[0] + 5 * BUTTON_DISTANCE,
+                           button_graph.position[1]], [button_graph.size[0], button_graph.size[1]], 'pause/play', '||')
+
+    button_restart = Button([button_graph.position[0] + 6 * button_graph.size[0] + 6 * BUTTON_DISTANCE,
+                             button_graph.position[1]], [button_graph.size[0], button_graph.size[1]], 'restart', 'Restart')
+
+    button_list = [button_graph, button_decrease_meal, button_increase_meal,
+                   button_decrease_satiety, button_increase_satiety, button_pause, button_restart]  # creates a button list
+>>>>>>> Stashed changes
     cell_list, meal_list = restart_the_game()  # creates the cells and the meal lists
     time = 0
     pygame.init()
