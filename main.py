@@ -4,14 +4,18 @@ from cells_classes_module import *
 
 
 cell_list, meal_list = [], []
+time = 0
+time_step = 1
 
 
 def restart_the_game(parameters):
     """Function returns cell_list with 50 different peaceful cells (type : list, each element is Cell) and
     meal_list (type : list, each element is Meal) with 20 different predator cells"""
-    global cell_list, meal_list
+    global cell_list, meal_list, time, time_step
 
     clean_file(file_name='data.txt')
+    time = 0
+    time_step = 1
     cell_list = []
     for i in range(50):
         position = np.array([random.random() * SCREEN_WIDTH, random.random() * SCREEN_HEIGHT])
@@ -64,14 +68,19 @@ def add_predator(position, cell_list, parameters):
         cell_list.append(new_cell)
 
 
-def find_button(positon, button_list):
+def find_button(positon, button_list, parameters):
     """:arg     positon - type : list, position of event
                 button_list - type : list, list of different buttons
     Function activates the button if it is clicked"""
+    global time_step
+
     for button in button_list:
         if (button.position[0] <= positon[0] <= button.position[0] + button.size[0]
                 and button.position[1] <= positon[1] <= button.position[1] + button.size[1]):
-            eval(button.function)
+            if button.function == 'Play/Pause':
+                time_step = (time_step + 1) % 2
+            elif button.function != 'pass':
+                eval(button.function)
 
 
 def buttons(parameters):
@@ -262,7 +271,7 @@ def buttons(parameters):
     button_pause = Button(
         point,
         [1.5 * button_length, button_height],
-        function='pass',
+        function='Play/Pause',
         text='> / ||',
         parameter=''
     )
@@ -273,7 +282,7 @@ def buttons(parameters):
     button_restart = Button(
         point,
         [1.5 * button_length, button_height],
-        function='restart_the_game()',
+        function='restart_the_game(parameters)',
         text='Restart',
         parameter=''
     )
@@ -414,6 +423,8 @@ def cells_parameters(list_cell, button_list):
 def main():
     """Main function of program. It creates a screen where cells lives and makes an actions with them"""
 
+    global time
+
     # Interface parameters
     user_parameter_set = user_parameters()
 
@@ -421,7 +432,6 @@ def main():
     button_list = buttons(user_parameter_set)  # creates a button list
 
     restart_the_game(user_parameter_set)  # creates the cells and the meal lists
-    time = 0
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     screen.set_alpha(None)
@@ -429,7 +439,7 @@ def main():
     fps = 100
     finished = False
     while not finished:
-        time += 1
+        time += time_step
         clean_screen(screen)
         clock.tick(fps)
         # Check the users actions
@@ -444,7 +454,7 @@ def main():
                                  cell_list,
                                  user_parameter_set)
                     # button activate :
-                    find_button(event.pos, button_list)
+                    find_button(event.pos, button_list, user_parameter_set)
                     # if the left button of mouse is clicked
                     update_labels(labels=button_list[3::4],
                                   parameters=user_parameter_set[1:])
@@ -455,11 +465,12 @@ def main():
                                  cell_list,
                                  user_parameter_set)
 
-        # Update all date for one time step
-        if len(meal_list) < user_parameter_set[1].value:
-            meal_list.append(Meal())
-        multiply(cell_list, time, user_parameter_set)
-        update(cell_list, meal_list, time)
+        if time_step != 0:
+            # Update all date for one time step
+            if len(meal_list) < user_parameter_set[1].value:
+                meal_list.append(Meal())
+            multiply(cell_list, time, user_parameter_set)
+            update(cell_list, meal_list, time)
 
         # Draw all
         # Draw the meal on the screen
