@@ -87,24 +87,23 @@ def buttons():
     """Function returns list of buttons"""
 
     offset = 10
-<<<<<<< Updated upstream
     # change graph button :
-    button_graph = Button([offset, offset], [100, PANEL_HEIGHT - 2 * offset], 'Change graph')
+    button_graph = Button([offset, offset], [100, PANEL_HEIGHT - 2 * offset], '', 'Change graph')
 
     button_decrease = Button([button_graph.position[0] + button_graph.size[0] + 10, button_graph.position[1]],
-                             [0.5 * button_graph.size[0], 0.5 * button_graph.size[1]], '-')
+                             [0.5 * button_graph.size[0], 0.5 * button_graph.size[1]], '', '-')
     button_increase = Button([button_graph.position[0] + 2 * button_graph.size[0] + 20 + button_decrease.size[0],
-                              button_graph.position[1]], [0.5 * button_graph.size[0], 0.5 * button_graph.size[1]], '+')
+                              button_graph.position[1]], [0.5 * button_graph.size[0], 0.5 * button_graph.size[1]], '', '+')
 
     # change age step button :
-    button_change_age_step = Button([400, 10], [100, 20], 'Change age step')
-    button_age_step_increase = Button([510, 10], [20, 20], '+')
-    button_age_step_decrease = Button([370, 10], [20, 20], '-')
+    button_change_age_step = Button([400, 10], [100, 20], '', 'Change age step')
+    button_age_step_increase = Button([510, 10], [20, 20], '', '+')
+    button_age_step_decrease = Button([370, 10], [20, 20], '', '-')
 
     # change multiply skill button
-    button_change_multiply_skill = Button([600, 10], [130, 20], 'Change multiply skill')
-    button_multiply_skill_increase = Button([750, 10], [20, 20], '+')
-    button_multiply_skill_decrease = Button([570, 10], [20, 20], '-')
+    button_change_multiply_skill = Button([600, 10], [130, 20], '', 'Change multiply skill')
+    button_multiply_skill_increase = Button([750, 10], [20, 20], '', '+')
+    button_multiply_skill_decrease = Button([570, 10], [20, 20], '', '-')
 
     # indicate what type of buttons
     button_increase.switch = button_decrease.switch = button_age_step_increase.switch = \
@@ -190,20 +189,21 @@ def cells_parameters(list_cell, button_list):
         change_age_step(list_cell, 2)
         button_list[5].status = 0
 
-    # decrease multiply skill :
+    '''# decrease multiply skill :
     elif button_list[7].status == 1:
         change_multiply_skill(list_cell, 2)
         button_list[7].status = 0
     # increase multiply skill :
     elif button_list[8].status == 1:
         change_multiply_skill(list_cell, 1)
-        button_list[8].status = 0
+        button_list[8].status = 0'''
 
 
 def main():
     """Main function of program. It creates a screen where cells lives and makes an actions with them"""
     button_list = buttons()  # creates a button list
-=======
+    offset = 10
+
     button_graph = Button([offset, offset], [50, PANEL_HEIGHT - 2 * offset], 'graph', '№1')
     button_decrease_meal = Button([button_graph.position[0] + button_graph.size[0] + BUTTON_DISTANCE,
                                    button_graph.position[1] + 0.5 * button_graph.size[1]],
@@ -227,7 +227,7 @@ def main():
 
     button_list = [button_graph, button_decrease_meal, button_increase_meal,
                    button_decrease_satiety, button_increase_satiety, button_pause, button_restart]  # creates a button list
->>>>>>> Stashed changes
+
     cell_list, meal_list = restart_the_game()  # creates the cells and the meal lists
     time = 0
     pygame.init()
