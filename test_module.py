@@ -96,7 +96,7 @@ class ProgramTests(unittest.TestCase):
          victims_list, predators_list,
          victims_list_mid_age, predators_list_mid_age,
          victims_list_mid_engine, predators_list_mid_engine,
-         victims_list_mid_satiety, predators_list_mid_satiety) = read_data()
+         victims_list_mid_satiety, predators_list_mid_satiety) = read_data('data.txt')
 
         # compare time with 2
         self.assertEqual(time_list, [2])

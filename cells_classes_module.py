@@ -101,9 +101,9 @@ class Cell:
             view_radius - type : float or int, how much peaceful cell can see to find predator
 
     """
-    def __init__(self):
+    def __init__(self, age_step, multiply_skill, satiety_step):
         # Common property
-        self.multiply_skill = 0.8
+        self.multiply_skill = multiply_skill
         self.age = 0
         self.size = 5
         self.position = np.array([SCREEN_WIDTH / 2 * random.uniform(0, 1),
@@ -111,10 +111,10 @@ class Cell:
         self.velocity = np.array([1.0, 1.0])
         # Genetic code
         self.satiety = 1.0  # сытость
-        self.satiety_step = satiety_step()
+        self.satiety_step = satiety_step
         self.engines = 3 + (3 * random.random() - 1.5)**3
         self.reproductive_age = [5, 80]
-        self.age_step = 0.03
+        self.age_step = age_step
         self.age_of_last_multiplication = 0
         self.reproductive_waiting = 0.5
         self.color = GREEN
@@ -218,14 +218,14 @@ class Cell:
 
         self.velocity += acceleration
 
-    def multiply(self, list_cells):
+    def multiply(self, list_cells, parameters):
         """:arg     list_cells - list of cells
 
         Function returns new_cell if it could spawn or 0 if not."""
 
         global spawn  # variable to spawn
         spawn = True
-        new_cell = Cell()  # creates new cell
+        new_cell = Cell(parameters[2].value, parameters[3].value, parameters[4].value)  # creates new cell
 
         # predator multiply with predator :
         if self.predator:

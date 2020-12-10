@@ -46,12 +46,13 @@ def write_data(list_cells, time):
             file.write(cell_data)
 
 
-def read_data():
-    """ Function reads data from data.txt file
+def read_data(file_name):
+    """ Function reads data from file_name file
 
     Parameters
     ----------
-
+    file_name : sting
+        name of data file
     Returns
     ----------
     victims_list : list
@@ -72,7 +73,7 @@ def read_data():
     victims_list_mid_satiety = []
     predators_list_mid_satiety = []
 
-    with open('data.txt', 'r') as file:
+    with open(file_name, 'r') as file:
         for line in file:
             input_data.append(line.split())
     for i in range(1, len(input_data)):
@@ -94,18 +95,34 @@ def read_data():
             )
 
 
-def save_file():
+def save_file(file_name, folder_name):
     """ Function copy data.txt file to data_yyyy_mm_dd_hh_mm_ss.txt file
 
     Parameters
     ----------
-
+    file_name : sting
+        name of data file
+    folder_name : string
+        name of data file folder
     Returns
     ----------
     """
     x = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
     a = 'data_' + str(x) + '.txt'
-    copyfile('data.txt', str(a))
-    move(str(a), 'database')
-    file = open('data.txt', 'w')
+    copyfile(file_name, str(a))
+    move(str(a), folder_name)
+    clean_file(file_name)
+
+
+def clean_file(file_name):
+    """ Function clean data.txt file
+
+    Parameters
+    ----------
+    file_name : sting
+        name of data file
+    Returns
+    ----------
+    """
+    file = open(file_name, 'w')
     file.close()

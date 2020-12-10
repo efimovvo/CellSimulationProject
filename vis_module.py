@@ -28,7 +28,7 @@ BLUE = (0, 0, 204)
 # Fonts
 FONT = 'verdana'
 FONT_COLOR = WHITE
-FONT_SIZE_MIN = 12
+FONT_SIZE_MIN = 10
 FONT_SIZE_MAX = 14
 
 # Axes
@@ -42,6 +42,28 @@ BUTTON_DISTANCE = 10
 
 # Satiety change step
 SATIETY_STEP = 0.003
+
+
+class UserPanelParameter:
+    def __init__(self, name, value, min_value, max_value, step_value):
+        self.name = name
+        self.value = value
+        self.min_value = min_value
+        self.max_value = max_value
+        self.step_value = step_value
+
+    def increase(self):
+        self.value += self.step_value
+        if self.value > self.max_value:
+            self.value = self.max_value
+
+    def increase_modulo(self):
+        self.value = (self.value + self.step_value) % (self.max_value + 1)
+
+    def decrease(self):
+        self.value -= self.step_value
+        if self.value < self.min_value:
+            self.value = self.min_value
 
 
 class FoodQuantity:
@@ -111,61 +133,21 @@ class Button:
             text - type : string, text on the button
             switch - type : bool, is it button switch or no
     """
-    #Trofimov
-    '''def __init__(self, position, size, text):'''
-    '''self.switch = False'''
-    def __init__(self, position, size, function, text):
+    def __init__(self, position, size, function, text, parameter):
         self.position = position
         self.size = size
-        self.text = text
-        self.status = 0
         self.function = function
-        self.switch = False
+        self.text = text
+        self.parameter = parameter
 
     def click(self):
-        """Function changes status of button"""
-        self.status += 1
-        self.status = self.status % 4
-    #Trofimov
-    '''def draw(self, surf):
-        """:arg :   surf - surface where button will be drawn
-
-        Function draws button on the screen"""
-
-        color_set = [WHITE, LIGHT_GREY, DARK_GREY, BLACK]
-        # changes color if button not switch
-        if not self.switch:
-            color = color_set[self.status]
-        else:
-            # color is constant for switch buttons
-            color = WHITE'''
-
-    def click(self):
-        number_graph = ['№1', '№2', '№3', '№4']
-        pause_play = ['||', '>']
-        if self.function == 'graph':
-            self.status += 1
-            self.status %= 4
-            self.text = number_graph[self.status]
-        if self.function == 'decrease_meal' or 'increase_meal':
-            self.max_food()
-        if self.function == 'decrease_satiety' or 'increase_satiety':
-            self.satiety_step()
-        if self.function == 'pause/play':
-            self.status += 1
-            self.status %= 2
-            self.text = pause_play[self.status]
-        if self.function == 'restart':
-            pass
+        if self.function != 'pass':
+            eval(self.function)
 
     def draw(self, surf):
         color_set = [WHITE, LIGHT_GREY, DARK_GREY, BLACK]
         # changes color if button not switch
-        if not self.switch:
-            color = color_set[self.status]
-        else:
-            # color is constant for switch buttons
-            color = WHITE
+        color = color_set[0]
         pygame.draw.rect(surf, color,
                         [self.position[0], self.position[1],
                          self.size[0], self.size[1]])
@@ -173,8 +155,23 @@ class Button:
         text_surface = font_surface.render(str(self.text), True, BLACK)
         text_rect = text_surface.get_rect(
             center=(self.position[0] + self.size[0] // 2,
-                        self.position[1] + self.size[1] // 2))
+                    self.position[1] + self.size[1] // 2))
         surf.blit(text_surface, text_rect)
+
+    def get_corner(self, corner_name):
+        if corner_name == "top-left":
+            coordinate = self.position
+        elif corner_name == "bottom-left":
+            coordinate = [self.position[0],
+                          self.position[1] + self.size[1]]
+        elif corner_name == "top-right":
+            coordinate = [self.position[0] + self.size[0],
+                          self.position[1]]
+        else:
+            coordinate = [self.position[0] + self.size[0],
+                          self.position[1] + self.size[1]]
+        return coordinate
+
 
 def change_food_max_quantity(status):
     """:arg : status - type : int, status of button
@@ -217,32 +214,9 @@ def clean_screen(surf):
     surf.fill(DARK_GREY)
 
 
-def draw_age_step(surf, cell):
-    """:arg :   surf - surface where age step will be drawn
-                cell - type : Cell, cell
-
-    Function draws age step of cells on the surf
-    """
-    text_obj = pygame.font.Font(None, 20)
-    text_age_step = text_obj.render('age step : {}'.format(round(cell.age_step, 3)), True, BLACK)
-    surf.blit(text_age_step, [800, 10])
-
-
-def draw_multiply_skill(surf, cell):
-    """:arg :   surf - surface where multiply skill will be drawn
-                    cell - type : Cell, cell
-
-        Function draws multiply skill of cells on the surf
-    """
-    text_obj = pygame.font.Font(None, 20)
-    text_age_step = text_obj.render('multiply skill : {}'.format(round(cell.multiply_skill, 2)), True, BLACK)
-    surf.blit(text_age_step, [950, 10])
-
-
-def draw_user_panel(surf, button_list, cell):
+def draw_user_panel(surf, button_list):
     """:arg :   surf - surface where user panel will be drawn
                 button_list - type : list, each element is Button type
-                cell - type : Cell
 
     Function draws user panel on the screen with all buttons
     """
@@ -254,36 +228,6 @@ def draw_user_panel(surf, button_list, cell):
 
     for button in button_list:
         button.draw(surf)
-
-    index_quantity = FoodQuantity([button_list[1].position[0] + button_list[1].size[0] + 5,
-                                   button_list[0].position[1]], [button_list[0].size[0],
-                                                                 0.5*button_list[0].size[1]], FOOD_MAX_QUANTITY)
-    index_quantity.draw(surf)
-
-    meal_quantity = FoodQuantity([button_list[1].position[0] + button_list[1].size[0] + 0.5 * BUTTON_DISTANCE,
-                                  button_list[0].position[1] + 0.5 * button_list[0].size[1]],
-                                 [button_list[0].size[0], 0.5 * button_list[0].size[1]], 'meal_quantity')
-    meal_quantity.draw(surf)
-
-    comment_meal = FoodQuantity([button_list[0].position[0] + button_list[0].size[0] + BUTTON_DISTANCE,
-                                 button_list[0].position[1]], [button_list[1].size[0] + BUTTON_DISTANCE
-                                                               + meal_quantity.size[0] + button_list[2].size[0],
-                                                               0.4 * button_list[0].size[1]], 'comment_meal')
-    comment_meal.draw(surf)
-
-    satiety_step = Satiety([button_list[3].position[0] + button_list[3].size[0] + 0.5 * BUTTON_DISTANCE,
-                            button_list[0].position[1] + 0.5 * button_list[0].size[1]],
-                           [button_list[0].size[0], 0.5 * button_list[0].size[1]], 'satiety_step_quantity')
-    satiety_step.draw(surf)
-
-    comment_satiety_step = Satiety([button_list[0].position[0] + 3 * button_list[0].size[0] + 3 * BUTTON_DISTANCE,
-                                    button_list[0].position[1]], [button_list[3].size[0] + BUTTON_DISTANCE
-                                                                  + satiety_step.size[0] + button_list[4].size[0],
-                                                                  0.4 * button_list[0].size[1]], 'comment_satiety_step')
-    comment_satiety_step.draw(surf)
-
-    draw_age_step(surf, cell)
-    draw_multiply_skill(surf, cell)
 
 
 def draw_plot(surf):
@@ -330,7 +274,9 @@ def draw_graph(surface, starting_point, sizes, x_data, y_data, axis_comment, gra
     for i in range(len(y_data)):
         y_data[i] = y_data[i][min_index_on_screen:]
 
-    y_max = (max(max(y_data)) // 10 + 1) * 10
+    y_max = 0
+    for i in range(len(y_data)):
+        y_max = (max(y_max, max(y_data[i])) // 10 + 1) * 10
     y_min = 0
 
     image_axis = pygame.Surface((sizes[0], sizes[1]), pygame.SRCALPHA)

@@ -39,7 +39,6 @@ def change_multiply_skill(list_cells, status):
         list_cells[i].multiply_skill += delta
 
 
-
 def kill_the_cell(list_cell, cell, time):
     """:arg     list_cell - type : list, each element is Cell type,
                 cell - type : Cell, cell which was killed
@@ -62,7 +61,7 @@ def born_the_cell(list_cell, cell, time):
     write_data(list_cell, time)  # writes data about born
 
 
-def multiply(list_cells, time):
+def multiply(list_cells, time, parameters):
     """:arg:    list_cells - list of cells, type : list, each element is Cell type
                 time - time from begin simulation, type : float
 
@@ -79,9 +78,8 @@ def multiply(list_cells, time):
                 # cells could not multiply each moment of time :
                 and cell.age - cell.age_of_last_multiplication > cell.reproductive_waiting
                 # cells have to have a lot of satiety to multiply :
-                and cell.satiety >= 0.5
-        ):
-            new_cell = cell.multiply(list_cells)  # new_cell = Cell() or 0
+                and cell.satiety >= 0.5):
+            new_cell = cell.multiply(list_cells, parameters)  # new_cell = Cell() or 0
             # born the cell :
             if new_cell != 0:
                 born_the_cell(list_cells, new_cell, time)
