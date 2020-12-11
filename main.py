@@ -1,4 +1,3 @@
-from vis_module import *
 from actions_module import *
 from cells_classes_module import *
 
@@ -37,7 +36,8 @@ def add_peaceful(position, cell_list, parameters):
         pass
     # add new cell :
     else:
-        new_cell = Cell(parameters[2].value, parameters[3].value, parameters[4].value)  # create Cell
+        # create Cell
+        new_cell = Cell(parameters[2].value, parameters[3].value, parameters[4].value)
         # random cell position :
         new_cell.position = position
         new_cell.age = random.random() * 50
@@ -55,6 +55,7 @@ def add_predator(position, cell_list, parameters):
             or position[1] > SCREEN_HEIGHT or position[1] < 0):
         pass
     else:
+        # create Cell
         new_cell = Cell(parameters[2].value, parameters[3].value, 0.005)
         # random cell position :
         new_cell.position = position
@@ -68,15 +69,15 @@ def add_predator(position, cell_list, parameters):
         cell_list.append(new_cell)
 
 
-def find_button(positon, button_list, parameters):
-    """:arg     positon - type : list, position of event
+def find_button(position, button_list, parameters):
+    """:arg     position - type : list, position of event
                 button_list - type : list, list of different buttons
     Function activates the button if it is clicked"""
     global time_step
 
     for button in button_list:
-        if (button.position[0] <= positon[0] <= button.position[0] + button.size[0]
-                and button.position[1] <= positon[1] <= button.position[1] + button.size[1]):
+        if (button.position[0] <= position[0] <= button.position[0] + button.size[0]
+                and button.position[1] <= position[1] <= button.position[1] + button.size[1]):
             if button.function == 'Play/Pause':
                 time_step = (time_step + 1) % 2
             elif button.function != 'pass':
@@ -383,41 +384,6 @@ def graphs(surf, button_list, time_list, victims_list, predators_list,
                    axis_comment=["Популяция жертв, шт.", "Популяция хищников, шт."],
                    graph_name="Фазовая диаграмма: зависимость популяции хищников от популяции жертв",
                    x_scale=10 * (max(victims_list) // 10 + 1))
-
-
-def cells_parameters(list_cell, button_list):
-    """:arg :   list_cell - type : list, each element is Cell type
-                button_list - type : list, each element if Button type
-
-    Function changes cells parameters if button was pressed.
-    """
-    # decrease max food number :
-    if button_list[1].status == 1:
-        change_food_max_quantity(2)
-        button_list[1].status = 0
-
-    # increase max food number :
-    elif button_list[2].status == 1:
-        change_food_max_quantity(1)
-        button_list[2].status = 0
-
-    # increase age step :
-    elif button_list[4].status == 1:
-        change_age_step(list_cell, 1)
-        button_list[4].status = 0
-    # decrease age step :
-    elif button_list[5].status == 1:
-        change_age_step(list_cell, 2)
-        button_list[5].status = 0
-
-    '''# decrease multiply skill :
-    elif button_list[7].status == 1:
-        change_multiply_skill(list_cell, 2)
-        button_list[7].status = 0
-    # increase multiply skill :
-    elif button_list[8].status == 1:
-        change_multiply_skill(list_cell, 1)
-        button_list[8].status = 0'''
 
 
 def main():

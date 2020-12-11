@@ -73,11 +73,6 @@ class FoodQuantity:
                 size - type : int, size
                 text - type : string or int or float, text of food quantity
     """
-    #Trofimov
-    '''def __init__(self, position, size, quantity):
-        self.position = position
-        self.size = size
-        self.text = quantity'''
 
     def __init__(self, position, size, function):
         self.position = position
