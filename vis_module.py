@@ -265,6 +265,8 @@ def draw_graph(surface, starting_point, sizes, x_data, y_data, axis_comment, gra
 
     x_max = max(x_data) if max(x_data) > x_scale else x_scale
     x_min = x_max - x_scale
+    if x_max > 1000:
+        number_of_ticks[0] = 10
 
     min_index_on_screen = 0
     for i in range(len(x_data)):
