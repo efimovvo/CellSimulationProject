@@ -34,19 +34,30 @@ FONT_SIZE_MAX = 14
 # Axes
 AXES_COLOR = WHITE
 
-# Interface parameters
-FOOD_MAX_QUANTITY = 20
 
-# Distance between buttons
-BUTTON_DISTANCE = 10
-
-# Satiety change step
-SATIETY_STEP = 0.003
-
-
-#Belkovich komment
 class UserPanelParameter:
+    """ UserPanelParameter class : class for parameters which is controlled by user
+
+        Parameters:
+            name : string : name of parameter
+            value : int or float : numeric value of parameter
+            min_value : int or float : minimum for value
+            max_value : int or float : maximum for value
+            step_value : int or float : step of value changing
+        Methods:
+            init : Initializing function
+            draw : Function draws buttons on the screen
+            get_corner : Function calculates the corner coordinates of button
+        """
     def __init__(self, name, value, min_value, max_value, step_value):
+        """ Initializing function.
+
+            :param name : string : name of parameter
+            :param value : int or float : numeric value of parameter
+            :param min_value : int or float : minimum for value
+            :param max_value : int or float : maximum for value
+            :param step_value : int or float : step of value changing
+        """
         self.name = name
         self.value = value
         self.min_value = min_value
@@ -54,125 +65,77 @@ class UserPanelParameter:
         self.step_value = step_value
 
     def increase(self):
+        """ Function increase the parameter value on one step_value. """
         self.value += self.step_value
         if self.value > self.max_value:
             self.value = self.max_value
 
     def increase_modulo(self):
+        """ Function increase by modulo max_value the parameter value on one step_value. """
         self.value = (self.value + self.step_value) % (self.max_value + 1)
 
     def decrease(self):
+        """ Function decrease the parameter value on one step_value. """
         self.value -= self.step_value
         if self.value < self.min_value:
             self.value = self.min_value
 
 
-class FoodQuantity:
-    """class for food quantity.
-        attributes :
-                position - type : list, position
-                size - type : int, size
-                text - type : string or int or float, text of food quantity
-    """
-    #Belkovich komment
-    def __init__(self, position, size, function):
-        self.position = position
-        self.size = size
-        self.function = function
-        self.text = ''
-        if self.function == 'meal_quantity':
-            self.text = FOOD_MAX_QUANTITY
-        if self.function == 'comment_meal':
-            self.text = 'Кол-во еды'
-
-    def draw(self, surf):
-        """:arg :   surf - surface where button will be drawn
-
-        Function draws text of food quantity on the screen
-        """
-        pygame.draw.rect(surf, WHITE, [self.position[0], self.position[1],
-                                       self.size[0], self.size[1]])
-        font_surface = pygame.font.SysFont(FONT, FONT_SIZE_MIN)
-        text_surface = font_surface.render(str(self.text), True, BLACK)
-        text_rect = text_surface.get_rect(
-            center=(self.position[0] + self.size[0] // 2,
-                    self.position[1] + self.size[1] // 2))
-        surf.blit(text_surface, text_rect)
-
-
-class Satiety:
-    """class for satiety step.
-        attributes:
-                position - type : list, position
-                size - type : int, size
-                function - type: str, panel function
-    """
-    #Belkovich komment
-    def __init__(self, position, size, function):
-        self.position = position
-        self.size = size
-        self.function = function
-        if self.function == 'satiety_step_quantity':
-            self.text = SATIETY_STEP
-        if self.function == 'comment_satiety_step':
-            self.text = 'Шаг изм-я сытости'
-
-    def draw(self, surf):
-        """arg :    surf - surface where it will de drawn
-
-        Function draws food quantity on the screen
-        """
-        pygame.draw.rect(surf, WHITE, [self.position[0], self.position[1],
-                                       self.size[0], self.size[1]])
-        font_surface = pygame.font.SysFont(FONT, FONT_SIZE_MIN)
-        text_surface = font_surface.render(str(self.text), True, BLACK)
-        text_rect = text_surface.get_rect(
-            center=(self.position[0] + self.size[0] // 2,
-                    self.position[1] + self.size[1] // 2))
-        surf.blit(text_surface, text_rect)
-
-
 class Button:
-    """Button class :
-        attributes :
-            position - type : list, position of button
-            size - type : list, size of button
-            text - type : string, text on the button
-            switch - type : bool, is it button switch or no
+    """ Button class : class of the button for user panel on the screen.
+
+        Parameters:
+            position : list : x and y coordinates of left top corner
+            size : list : length and height of button
+            function : string : python code that should be done after click
+            text : string : text on the button
+            parameter : UserPanelParameter : parameter, which is controlled
+                by the button
+        Methods:
+            init : Initializing function
+            draw : Function draws buttons on the screen
+            get_corner : Function calculates the corner coordinates of button
     """
-    #Belkovich komment
     def __init__(self, position, size, function, text, parameter):
+        """ Initializing function.
+
+            :param position : list : x and y coordinates of left top corner
+            :param size : list : length and height of button
+            :param function : string : python code that should be done after click
+            :param text : string : text on the button
+            :param parameter : UserPanelParameter : parameter, which is controlled
+                by the button
+        """
         self.position = position
         self.size = size
         self.function = function
         self.text = text
         self.parameter = parameter
 
-    #Belkovich komment
-    def click(self):
-        if self.function != 'pass':
-            eval(self.function)
+    def draw(self, surface):
+        """ Function draws buttons on the screen.
 
-    def draw(self, surf):
-        """:arg :   surf - surface where button will be drawn
-
-        Function draws buttons on the screen
-        """
+            :param surface : pygame.Surface : surface where button will be drawn
+            """
         color_set = [WHITE, LIGHT_GREY, DARK_GREY, BLACK]
         # changes color if button not switch
         color = color_set[0]
-        pygame.draw.rect(surf, color,
-                        [self.position[0], self.position[1],
-                         self.size[0], self.size[1]])
+        pygame.draw.rect(surface, color,
+                         [self.position[0], self.position[1],
+                          self.size[0], self.size[1]])
         font_surface = pygame.font.SysFont(FONT, FONT_SIZE_MIN)
         text_surface = font_surface.render(str(self.text), True, BLACK)
         text_rect = text_surface.get_rect(
             center=(self.position[0] + self.size[0] // 2,
                     self.position[1] + self.size[1] // 2))
-        surf.blit(text_surface, text_rect)
+        surface.blit(text_surface, text_rect)
 
-    #Belkovich komment
     def get_corner(self, corner_name):
+        """ Function calculates the corner coordinates of button.
+
+        :param corner_name : string : name of corner
+            ("top-left", "bottom-left", "top-right", "bottom-right")
+            """
         if corner_name == "top-left":
             coordinate = self.position
         elif corner_name == "bottom-left":
@@ -187,54 +150,19 @@ class Button:
         return coordinate
 
 
-def change_food_max_quantity(status):
-    """:arg : status - type : int, status of button
+def clean_screen(surface):
+    """ Function draw only background color on the surface
 
-        Function changes max food amount"""
-    global FOOD_MAX_QUANTITY
-    if status == 1:
-        FOOD_MAX_QUANTITY += 2
-    else:
-        FOOD_MAX_QUANTITY -= 2
-
-    #Belkovich
-    def max_food(self):
-        global FOOD_MAX_QUANTITY
-        if self.function == 'decrease_meal':
-            FOOD_MAX_QUANTITY -= 2
-            if FOOD_MAX_QUANTITY < 0:
-                FOOD_MAX_QUANTITY += 2
-        if self.function == 'increase_meal':
-            FOOD_MAX_QUANTITY += 2
-
-    #Belkovich
-    def satiety_step(self):
-        global SATIETY_STEP
-        if self.function == 'decrease_satiety':
-            SATIETY_STEP -= 0.001
-            if SATIETY_STEP < 0:
-                SATIETY_STEP += 0.001
-        if self.function == 'increase_satiety':
-            SATIETY_STEP += 0.001
-
-
-def food_max_quantity():
-    return FOOD_MAX_QUANTITY
-
-
-def satiety_step():
-    return SATIETY_STEP
-
-
-def clean_screen(surf):
-    surf.fill(DARK_GREY)
+        :param surface : pygame.Surface : surface for cleaning
+    """
+    surface.fill(DARK_GREY)
 
 
 def draw_user_panel(surf, button_list):
-    """:arg :   surf - surface where user panel will be drawn
-                button_list - type : list, each element is Button type
+    """ Function draws user panel on the screen with all buttons.
 
-    Function draws user panel on the screen with all buttons
+        :param surf : pygame.Surface : surface where user panel will be drawn
+        :param button_list : list(Button) : list, each element is Button type
     """
     pygame.draw.rect(
         surf,
@@ -246,17 +174,13 @@ def draw_user_panel(surf, button_list):
         button.draw(surf)
 
 
-#Belkovich komment
-def draw_plot(surf):
-    pygame.draw.rect(
-        surf,
-        DARK_GREY,
-        [SCREEN_WIDTH, PANEL_HEIGHT, PLOT_AREA_WIDTH, SCREEN_HEIGHT]
-    )
-
-
-#Belkovich komment
 def interpolate_color(color_1, color_2, coefficient):
+    """ Function interpolate the color between two ones with given ratio.
+
+        :param color_1 : tuple(int, int, int) : first color
+        :param color_2 : tuple(int, int, int) : second color
+        :param coefficient : float : proportion (part of first color)
+    """
     color_1 = np.array(color_1)
     color_2 = np.array(color_2)
     color = color_1 * coefficient + color_2 * (1 - coefficient)
@@ -265,16 +189,18 @@ def interpolate_color(color_1, color_2, coefficient):
     return tuple(color)
 
 
-def draw_graph(surface, starting_point, sizes, x_data, y_data, axis_comment, graph_name, x_scale=500):
-    """:arg :   surface - surface where graph will be drawn
-                starting_points - type : list, the starting point of graph
-                sizes - type : list, size of graph
-                x_data - type : list, data on x axis
-                y_data - type : list, data on y axis
-                axis_comment - type: list, each element is string
-                graph_name - type : string, name of graph
+def draw_graph(surface, starting_point, sizes, x_data, y_data,
+               axis_comment, graph_name, x_scale=500):
+    """ Function draws graph on the screen.
 
-    Function draws graph on the surface
+        :param surface : pygame.Surface : surface where graph will be drawn
+        :param starting_point : list : the starting point of graph
+        :param sizes : list : size of graph
+        :param x_data : list : data on x axis
+        :param y_data : list : data on y axis
+        :param axis_comment : list : each element is string
+        :param graph_name : string : name of graph
+        :param x_scale : int : maximum value (x_max - x_min)
     """
     # Parameters
     offset = 50
@@ -326,6 +252,7 @@ def draw_graph(surface, starting_point, sizes, x_data, y_data, axis_comment, gra
             center=(starting_point[0] + x,
                     starting_point[1] + y + 2 * tick_length))
         surface.blit(text_surface, text_rect)
+
     # Name of X axis
     text_surface = font_surface.render(axis_comment[0], True, FONT_COLOR)
     text_rect = text_surface.get_rect(
@@ -333,6 +260,7 @@ def draw_graph(surface, starting_point, sizes, x_data, y_data, axis_comment, gra
                 starting_point[1] + sizes[1] - offset + 3.5 * tick_length)
     )
     surface.blit(text_surface, text_rect)
+
     for i in range(number_of_ticks[1] + 1):
         # Tick position on Y axis
         x = offset
@@ -347,6 +275,7 @@ def draw_graph(surface, starting_point, sizes, x_data, y_data, axis_comment, gra
                     starting_point[1] + y)
         )
         surface.blit(text_surface, text_rect)
+
     # Name of Y axis
     text_surface = font_surface.render(axis_comment[1], True, FONT_COLOR)
     text_surface = pygame.transform.rotate(text_surface, 90)
@@ -365,6 +294,7 @@ def draw_graph(surface, starting_point, sizes, x_data, y_data, axis_comment, gra
     )
     surface.blit(text_surface, text_rect)
 
+    # Draw graph lines
     color_set = [GREEN, RED]
     for i in range(len(y_data)):
         line = []
@@ -379,10 +309,12 @@ def draw_graph(surface, starting_point, sizes, x_data, y_data, axis_comment, gra
                 start = int(np.floor(len(line) * j / color_steps))
                 end = int(np.ceil(len(line) * (j + 1) / color_steps))
                 line_segment = line[start:end + 1]
-                color = interpolate_color(basic_color, DARK_GREY, 0.2 + (j + 1) * 0.8 / color_steps)
+                color = interpolate_color(basic_color, DARK_GREY,
+                                          0.2 + (j + 1) * 0.8 / color_steps)
                 pygame.draw.lines(image_data, color, False, line_segment, 1)
             pygame.draw.circle(image_data, basic_color, line[-1], 3)
 
+    # Draw the surfaces on the screen
     surface.blit(image_axis,
                  (starting_point[0], starting_point[1]))
     surface.blit(image_data,
@@ -391,16 +323,20 @@ def draw_graph(surface, starting_point, sizes, x_data, y_data, axis_comment, gra
 
 def draw_cells(list_cells, surface):
     """ Function draws a cells on the surface.
-    :param surface: pygame.Surface : surface for drawing
-    :param list_cells : list(Cell) : list of cells
+
+        :param surface: pygame.Surface : surface for drawing
+        :param list_cells : list(Cell) : list of cells
     """
     for cell in list_cells:
         position = [cell.position[0], cell.position[1] + PANEL_HEIGHT]
-        cell.border_color = (102 + cell.satiety * 153, 102 + cell.satiety * 153, 102 + cell.satiety * 153)
+        cell.border_color = (102 + cell.satiety * 153, 102 + cell.satiety * 153,
+                             102 + cell.satiety * 153)
         if cell.predator:
-            cell.color = (150 + cell.satiety * 102, 102 - cell.satiety * 102, 102 - cell.satiety * 102)
+            cell.color = (150 + cell.satiety * 102, 102 - cell.satiety * 102,
+                          102 - cell.satiety * 102)
         else:
-            cell.color = (102 - cell.satiety * 102, 150 + cell.satiety * 102, 102 - cell.satiety * 102)
+            cell.color = (102 - cell.satiety * 102, 150 + cell.satiety * 102,
+                          102 - cell.satiety * 102)
         if cell.age < cell.reproductive_age[0]:
             cell.border_thickness = -1
         elif cell.reproductive_age[0] <= cell.age <= cell.reproductive_age[1]:
@@ -424,12 +360,11 @@ def draw_cells(list_cells, surface):
 
 
 def draw_meal(meal_list, surface):
-    """ Function draws a meal on the surface.
-    :arg
-    ---
-        meal: list - list of meal
-        surf - surface where cells will be drawn
-    """
+    """ Function draws a meal object on the surface.
+
+        :param surface : pygame.Surface : surface where cells will be drawn
+        :param meal_list : list : list of meal objects
+        """
     for meal in meal_list:
         x_min = meal.position[0] - meal.size / 2
         y_min = PANEL_HEIGHT + meal.position[1] - meal.size / 2

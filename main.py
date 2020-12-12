@@ -8,8 +8,11 @@ time_step = 1
 
 
 def restart_the_game(parameters):
-    """Function returns cell_list with 50 different peaceful cells (type : list, each element is Cell) and
-    meal_list (type : list, each element is Meal) with 20 different predator cells"""
+    """ Function returns cell_list with 50 different peaceful and 20 predator
+        cells and meal_list.
+
+        :param parameters : list(UserPanelParameter) : user parameters
+    """
     global cell_list, meal_list, time, time_step
 
     clean_file(file_name='data.txt')
@@ -25,10 +28,14 @@ def restart_the_game(parameters):
     meal_list = [Meal()]
 
 
-def add_peaceful(position, cell_list, parameters):
-    """:arg     position - type : list, position of event
-                cell_list - type : list, list of cells
-    Function adds the new peaceful cell in the place, where mouse clicks"""
+def add_peaceful(position, cells, parameters):
+    """ Function adds the new peaceful cell in the place,
+        where mouse clicks.
+
+        :param position : list : position of event
+        :param cells : list(Cell) : list of cells
+        :param parameters : list(UserPanelParameter) : user parameters
+    """
 
     # do not spawn cells outside screen :
     if (position[0] > SCREEN_WIDTH or position[0] < 0
@@ -42,13 +49,17 @@ def add_peaceful(position, cell_list, parameters):
         new_cell.position = position
         new_cell.age = random.random() * 50
         new_cell.satiety = random.random()  # random cell satiety
-        cell_list.append(new_cell)
+        cells.append(new_cell)
 
 
-def add_predator(position, cell_list, parameters):
-    """:arg     position - type : list, position of event
-                    list_cell - type : list, list of cells
-        Function adds the new predator cell in the place, where mouse clicks"""
+def add_predator(position, cells, parameters):
+    """ Function adds the new predator cell in the place,
+        where mouse clicks.
+
+        :param position : list : position of event
+        :param cells : list(Cell) : list of cells
+        :param parameters : list(UserPanelParameter) : user parameters
+    """
 
     # do not spawn cells outside screen :
     if (position[0] > SCREEN_WIDTH or position[0] < 0
@@ -66,16 +77,19 @@ def add_predator(position, cell_list, parameters):
         new_cell.satiety = random.random()
         new_cell.reproductive_age = [20, 50]
         new_cell.reproductive_waiting = 3
-        cell_list.append(new_cell)
+        cells.append(new_cell)
 
 
-def find_button(position, button_list, parameters):
-    """:arg     position - type : list, position of event
-                button_list - type : list, list of different buttons
-    Function activates the button if it is clicked"""
+def find_button(position, buttons, parameters):
+    """ Function activates the button if it is clicked.
+
+        :param position : list : position of event
+        :param buttons : list(Button) : list of cells
+        :param parameters : list(UserPanelParameter) : user parameters
+    """
     global time_step
 
-    for button in button_list:
+    for button in buttons:
         if (button.position[0] <= position[0] <= button.position[0] + button.size[0]
                 and button.position[1] <= position[1] <= button.position[1] + button.size[1]):
             if button.function == 'Play/Pause':
@@ -302,8 +316,8 @@ def buttons(parameters):
     return button_list
 
 
-#Belkovich komment
 def user_parameters():
+    """ Function creates user parameter set for user panel. """
     graph_number_parameter = UserPanelParameter('Номер графика', 0, 0, 3, 1)
     max_food_quantity_parameter = UserPanelParameter('Макс. кол-во еды', 20, 0, 200, 1)
     age_step_parameter = UserPanelParameter('Шаг старения', 3e-2, 0, 0.5, 1e-3)
@@ -316,15 +330,24 @@ def user_parameters():
             satiety_step_parameter]
 
 
-#Belkovich komment
 def update_labels(labels, parameters):
+    """ Function updates text values in buttons that indicates
+        the current values of user parameters.
+
+        :param labels : list(Button) : list of buttons that indicates values
+        :param parameters : list(UserPanelParameter) : list of parameters
+    """
     round_set = [0, 3, 2, 4]
     for i in range(len(labels)):
         labels[i].text = round(parameters[i].value, round_set[i])
 
 
-#Belkovich komment
 def update_parameters(parameters, cells):
+    """ Function updates values of current parameters after changing.
+
+        :param parameters : list(UserPanelParameter) : list of parameters
+        :param cells : list(Cell) : list of cell
+    """
     for cell in cells:
         cell.age_step = parameters[2].value
         cell.multiply_skill = parameters[3].value
