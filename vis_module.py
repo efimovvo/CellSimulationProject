@@ -44,6 +44,7 @@ BUTTON_DISTANCE = 10
 SATIETY_STEP = 0.003
 
 
+#Belkovich komment
 class UserPanelParameter:
     def __init__(self, name, value, min_value, max_value, step_value):
         self.name = name
@@ -73,7 +74,7 @@ class FoodQuantity:
                 size - type : int, size
                 text - type : string or int or float, text of food quantity
     """
-
+    #Belkovich komment
     def __init__(self, position, size, function):
         self.position = position
         self.size = size
@@ -85,6 +86,10 @@ class FoodQuantity:
             self.text = 'Кол-во еды'
 
     def draw(self, surf):
+        """:arg :   surf - surface where button will be drawn
+
+        Function draws text of food quantity on the screen
+        """
         pygame.draw.rect(surf, WHITE, [self.position[0], self.position[1],
                                        self.size[0], self.size[1]])
         font_surface = pygame.font.SysFont(FONT, FONT_SIZE_MIN)
@@ -96,6 +101,13 @@ class FoodQuantity:
 
 
 class Satiety:
+    """class for satiety step.
+        attributes:
+                position - type : list, position
+                size - type : int, size
+                function - type: str, panel function
+    """
+    #Belkovich komment
     def __init__(self, position, size, function):
         self.position = position
         self.size = size
@@ -128,6 +140,7 @@ class Button:
             text - type : string, text on the button
             switch - type : bool, is it button switch or no
     """
+    #Belkovich komment
     def __init__(self, position, size, function, text, parameter):
         self.position = position
         self.size = size
@@ -135,11 +148,16 @@ class Button:
         self.text = text
         self.parameter = parameter
 
+    #Belkovich komment
     def click(self):
         if self.function != 'pass':
             eval(self.function)
 
     def draw(self, surf):
+        """:arg :   surf - surface where button will be drawn
+
+        Function draws buttons on the screen
+        """
         color_set = [WHITE, LIGHT_GREY, DARK_GREY, BLACK]
         # changes color if button not switch
         color = color_set[0]
@@ -153,6 +171,7 @@ class Button:
                     self.position[1] + self.size[1] // 2))
         surf.blit(text_surface, text_rect)
 
+    #Belkovich komment
     def get_corner(self, corner_name):
         if corner_name == "top-left":
             coordinate = self.position
@@ -178,6 +197,7 @@ def change_food_max_quantity(status):
     else:
         FOOD_MAX_QUANTITY -= 2
 
+    #Belkovich
     def max_food(self):
         global FOOD_MAX_QUANTITY
         if self.function == 'decrease_meal':
@@ -187,6 +207,7 @@ def change_food_max_quantity(status):
         if self.function == 'increase_meal':
             FOOD_MAX_QUANTITY += 2
 
+    #Belkovich
     def satiety_step(self):
         global SATIETY_STEP
         if self.function == 'decrease_satiety':
@@ -225,6 +246,7 @@ def draw_user_panel(surf, button_list):
         button.draw(surf)
 
 
+#Belkovich komment
 def draw_plot(surf):
     pygame.draw.rect(
         surf,
@@ -233,6 +255,7 @@ def draw_plot(surf):
     )
 
 
+#Belkovich komment
 def interpolate_color(color_1, color_2, coefficient):
     color_1 = np.array(color_1)
     color_2 = np.array(color_2)

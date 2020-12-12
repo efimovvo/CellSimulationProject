@@ -302,6 +302,7 @@ def buttons(parameters):
     return button_list
 
 
+#Belkovich komment
 def user_parameters():
     graph_number_parameter = UserPanelParameter('Номер графика', 0, 0, 3, 1)
     max_food_quantity_parameter = UserPanelParameter('Макс. кол-во еды', 20, 0, 200, 1)
@@ -315,12 +316,14 @@ def user_parameters():
             satiety_step_parameter]
 
 
+#Belkovich komment
 def update_labels(labels, parameters):
     round_set = [0, 3, 2, 4]
     for i in range(len(labels)):
         labels[i].text = round(parameters[i].value, round_set[i])
 
 
+#Belkovich komment
 def update_parameters(parameters, cells):
     for cell in cells:
         cell.age_step = parameters[2].value
