@@ -1,5 +1,5 @@
-'''This module will contain functions for reading from file and
-for writing to file'''
+"""This module will contain functions for reading from file and
+for writing to file"""
 from shutil import copyfile, move
 import datetime
 
@@ -47,20 +47,20 @@ def write_data(list_cells, time):
 
 
 def read_data(file_name):
-    """ Function reads data from file_name file
+    """ Function reads data from 'file_name' file
 
     Parameters
     ----------
-    file_name : sting
+    file_name : string
         name of data file
     Returns
     ----------
     victims_list : list
-        list of victim population at the moments in time
+        list of victim population at the particular moment in time
     predators_list : list
-        list of predator population at the moments in time
+        list of predator population at the particular moment in time
     time : list
-        list of time moments
+        list of the particular moments
     """
     time_list = []
     input_data = []
@@ -96,11 +96,11 @@ def read_data(file_name):
 
 
 def save_file(file_name, folder_name):
-    """ Function copy data.txt file to data_yyyy_mm_dd_hh_mm_ss.txt file
+    """ Function copies 'data.txt' file to 'data_yyyy_mm_dd_hh_mm_ss.txt' file
 
     Parameters
     ----------
-    file_name : sting
+    file_name : string
         name of data file
     folder_name : string
         name of data file folder
@@ -115,11 +115,11 @@ def save_file(file_name, folder_name):
 
 
 def clean_file(file_name):
-    """ Function clean data.txt file
+    """ Function cleans data.txt file
 
     Parameters
     ----------
-    file_name : sting
+    file_name : string
         name of data file
     Returns
     ----------
