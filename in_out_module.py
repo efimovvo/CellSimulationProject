@@ -52,7 +52,7 @@ def read_data(file_name):
     Parameters
     ----------
     file_name : string
-        name of data file
+        name of the data file
     Returns
     ----------
     victims_list : list
@@ -101,9 +101,9 @@ def save_file(file_name, folder_name):
     Parameters
     ----------
     file_name : string
-        name of data file
+        name of the data file
     folder_name : string
-        name of data file folder
+        name of the data file folder
     Returns
     ----------
     """
@@ -115,12 +115,12 @@ def save_file(file_name, folder_name):
 
 
 def clean_file(file_name):
-    """ Function cleans data.txt file
+    """ Function cleans 'data.txt' file
 
     Parameters
     ----------
     file_name : string
-        name of data file
+        name of the data file
     Returns
     ----------
     """
