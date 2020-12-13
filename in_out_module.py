@@ -56,9 +56,9 @@ def read_data(file_name):
     Returns
     ----------
     victims_list : list
-        list of victim population at the particular moment in time
+        list of the victim's population at the particular moment in time
     predators_list : list
-        list of predator population at the particular moment in time
+        list of the predator's population at the particular moment in time
     time : list
         list of the particular moments
     """
