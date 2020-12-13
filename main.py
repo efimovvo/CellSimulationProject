@@ -8,8 +8,8 @@ time_step = 1
 
 
 def restart_the_game(parameters):
-    """ Function returns cell_list with 50 different peaceful and 20 predator
-        cells and meal_list.
+    """ Function returns cell_list with 50 different peaceful cells and 20 predators
+        and the meal_list.
 
         :param parameters : list(UserPanelParameter) : user parameters
     """
@@ -29,26 +29,25 @@ def restart_the_game(parameters):
 
 
 def add_peaceful(position, cells, parameters):
-    """ Function adds the new peaceful cell in the place,
-        where mouse clicks.
+    """ Function adds the new peaceful cell to the place,
+        where mouse was clicked.
 
         :param position : list : position of event
         :param cells : list(Cell) : list of cells
         :param parameters : list(UserPanelParameter) : user parameters
     """
 
-    # do not spawn cells outside screen :
+    # Do not spawn cells outside screen
     if (position[0] > SCREEN_WIDTH or position[0] < 0
             or position[1] > SCREEN_HEIGHT or position[1] < 0):
         pass
-    # add new cell :
+    # Adds new cell
     else:
-        # create Cell
+        # Creates cell
         new_cell = Cell(parameters[2].value, parameters[3].value, parameters[4].value)
-        # random cell position :
-        new_cell.position = position
-        new_cell.age = random.random() * 50
-        new_cell.satiety = random.random()  # random cell satiety
+        new_cell.position = position  # Generates random cell's position
+        new_cell.age = random.random() * 50  # Generates random cell's age
+        new_cell.satiety = random.random()  # Generates random cell's satiety
         cells.append(new_cell)
 
 
@@ -61,18 +60,18 @@ def add_predator(position, cells, parameters):
         :param parameters : list(UserPanelParameter) : user parameters
     """
 
-    # do not spawn cells outside screen :
+    # Do not spawn cells outside screen
     if (position[0] > SCREEN_WIDTH or position[0] < 0
             or position[1] > SCREEN_HEIGHT or position[1] < 0):
         pass
     else:
-        # create Cell
+        # Creates cell
         new_cell = Cell(parameters[2].value, parameters[3].value, 0.005)
-        # random cell position :
+        # Generates random cell position
         new_cell.position = position
         new_cell.age = random.random() * 20
-        new_cell.predator = True  # special indicator that have only predator cells
-        new_cell.color = RED  # color of predator cell
+        new_cell.predator = True  # Special indicator that have only predators
+        new_cell.color = RED  # Color of the predator
         new_cell.engines = 3 + (2 * random.random() - 1) ** 3
         new_cell.satiety = random.random()
         new_cell.reproductive_age = [20, 50]
@@ -80,12 +79,11 @@ def add_predator(position, cells, parameters):
         cells.append(new_cell)
 
 
-def find_button(position, buttons, parameters):
+def find_button(position, buttons):
     """ Function activates the button if it is clicked.
 
         :param position : list : position of event
         :param buttons : list(Button) : list of cells
-        :param parameters : list(UserPanelParameter) : user parameters
     """
     global time_step
 
@@ -107,7 +105,7 @@ def buttons(parameters):
     button_length = 80
     button_length_small = button_height_small
 
-    # change graph button :
+    # Changes a graph's button :
     button_graph = Button(
         [offset, offset],
         [1.5 * button_length, button_height],
@@ -116,7 +114,7 @@ def buttons(parameters):
         parameter=parameters[0]
     )
 
-    # change max food quantity
+    # Changes a maximum of the  food quantity
     point = button_graph.get_corner("top-right")
     point = [point[0] + offset, point[1]]
     button_max_food = Button(
@@ -157,7 +155,7 @@ def buttons(parameters):
         parameter=parameters[1]
     )
 
-    # change age step
+    # Changes a age step
     point = button_max_food.get_corner("top-right")
     point = [point[0] + offset, point[1]]
     button_age_step = Button(
@@ -198,7 +196,7 @@ def buttons(parameters):
         parameter=parameters[2]
     )
 
-    # change multiply skill
+    # Change a multiply skill
     point = button_age_step.get_corner("top-right")
     point = [point[0] + offset, point[1]]
     button_multiply_skill = Button(
@@ -239,7 +237,7 @@ def buttons(parameters):
         parameter=parameters[3]
     )
 
-    # change satiety
+    # Changes a satiety
     point = button_multiply_skill.get_corner("top-right")
     point = [point[0] + offset, point[1]]
     button_satiety = Button(
@@ -280,7 +278,7 @@ def buttons(parameters):
         parameter=parameters[4]
     )
 
-    # pause button
+    # A pause button
     point = button_satiety.get_corner("top-right")
     point = [point[0] + offset, point[1]]
     button_pause = Button(
@@ -291,7 +289,7 @@ def buttons(parameters):
         parameter=''
     )
 
-    # restart button
+    # A restart button
     point = button_pause.get_corner("top-right")
     point = [point[0] + offset, point[1]]
     button_restart = Button(
@@ -359,9 +357,9 @@ def graphs(surf, button_list, time_list, victims_list, predators_list,
            victims_list_mid_satiety, predators_list_mid_satiety):
 
     """Function draws graphs on the surf. It depends what type of button is pushed"""
-    # for top graph
+    # For the upper graph
     if len(time_list) > 0:
-        # for 0 type :
+        # For 0 type
         if button_list[0].parameter.value == 0:
             draw_graph(surf,
                        starting_point=[SCREEN_WIDTH, PANEL_HEIGHT],
@@ -371,7 +369,7 @@ def graphs(surf, button_list, time_list, victims_list, predators_list,
                        axis_comment=["Время, шаг симуляции", "Популяция, шт."],
                        graph_name="График зависимости размера популяции от времени")
 
-        # for 1 type :
+        # For 1 type :
         elif button_list[0].parameter.value == 1:
             draw_graph(surf,
                        starting_point=[SCREEN_WIDTH, PANEL_HEIGHT],
@@ -381,7 +379,7 @@ def graphs(surf, button_list, time_list, victims_list, predators_list,
                        axis_comment=["Время, шаг симуляции", "Средний возраст популяции, ед. возраста"],
                        graph_name="График зависимости возраста популяции от времени")
 
-        # for 2 type :
+        # For 2 type :
         elif button_list[0].parameter.value == 2:
             draw_graph(surf,
                        starting_point=[SCREEN_WIDTH, PANEL_HEIGHT],
@@ -390,7 +388,7 @@ def graphs(surf, button_list, time_list, victims_list, predators_list,
                        y_data=[victims_list_mid_engine, predators_list_mid_engine],
                        axis_comment=["Время, шаг симуляции", "Ср. подвижность по популяции, ед. подв-ти"],
                        graph_name="График зависимости средней подвижности от времени")
-        # for 3 type
+        # For 3 type
         else:
             draw_graph(surf,
                        starting_point=[SCREEN_WIDTH, PANEL_HEIGHT],
@@ -400,7 +398,7 @@ def graphs(surf, button_list, time_list, victims_list, predators_list,
                        axis_comment=["Время, шаг симуляции", "Средняя сытость по популяции, % сытости"],
                        graph_name="График зависимости средней сытости от времени")
 
-    # for bottom graph
+    # For the lower graph
     if len(victims_list) > 0:
         draw_graph(surf,
                    starting_point=[SCREEN_WIDTH, PANEL_HEIGHT + SCREEN_HEIGHT // 2],
@@ -421,9 +419,9 @@ def main():
     user_parameter_set = user_parameters()
 
     # Buttons
-    button_list = buttons(user_parameter_set)  # creates a button list
+    button_list = buttons(user_parameter_set)  # Creates a button list
 
-    restart_the_game(user_parameter_set)  # creates the cells and the meal lists
+    restart_the_game(user_parameter_set)  # Creates the cells and the meal lists
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     screen.set_alpha(None)
@@ -434,45 +432,44 @@ def main():
         time += time_step
         clean_screen(screen)
         clock.tick(fps)
-        # Check the users actions
+        # Checks the users actions
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 finished = True
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                # if the right button of mouse is clicked :
+                # Checks if the right button of the mouse is clicked
                 if event.button == 1:
-                    # add peaceful cell :
+                    # Adds a peaceful cell
                     add_peaceful(np.array([event.pos[0], event.pos[1] - PANEL_HEIGHT]),
                                  cell_list,
                                  user_parameter_set)
-                    # button activate :
+                    # Calls a find_button function
                     find_button(event.pos, button_list, user_parameter_set)
-                    # if the left button of mouse is clicked
+                    # Checks if the left button of the mouse is clicked
                     update_labels(labels=button_list[3::4],
                                   parameters=user_parameter_set[1:])
                     update_parameters(user_parameter_set, cell_list)
                 elif event.button == 3:
-                    # add predator cell :
+                    # Adds a predator
                     add_predator(np.array([event.pos[0], event.pos[1] - PANEL_HEIGHT]),
                                  cell_list,
                                  user_parameter_set)
 
         if time_step != 0:
-            # Update all date for one time step
+            # Update all data for one time step
             if len(meal_list) < user_parameter_set[1].value:
                 meal_list.append(Meal())
             multiply(cell_list, time, user_parameter_set)
             update(cell_list, meal_list, time)
 
-        # Draw all
-        # Draw the meal on the screen
+        # Draws meal on the screen
         draw_meal(meal_list, screen)
-        # Draw the cells on the screen
+        # Draws cells on the screen
         draw_cells(cell_list, screen)
 
-        # Draw interface objects
+        # Draws interface objects
         draw_user_panel(screen, button_list)
-        # Draw population data
+        # Draws population data
         (time_list,
          victims_list, predators_list,
          victims_list_mid_age, predators_list_mid_age,
@@ -484,7 +481,7 @@ def main():
                victims_list_mid_engine, predators_list_mid_engine,
                victims_list_mid_satiety, predators_list_mid_satiety)
 
-        # Update the screen
+        # Updates the screen
         pygame.display.flip()
 
     save_file(file_name='data.txt', folder_name='database')

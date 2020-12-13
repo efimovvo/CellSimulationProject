@@ -92,9 +92,9 @@ class Button:
             parameter : UserPanelParameter : parameter, which is controlled
                 by the button
         Methods:
-            init : Initializing function
-            draw : Function draws buttons on the screen
-            get_corner : Function calculates the corner coordinates of button
+            init : Initializes class
+            draw : Draws buttons on the screen
+            get_corner : Calculates the corner coordinates of button
     """
     def __init__(self, position, size, function, text, parameter):
         """ Initializing function.
