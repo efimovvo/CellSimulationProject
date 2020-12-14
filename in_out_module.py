@@ -20,26 +20,49 @@ def write_data(list_cells, time):
     list_victim = [cell for cell in list_cells if not cell.predator]
     list_predator = [cell for cell in list_cells if cell.predator]
 
-    list_victim_age = [cell.age for cell in list_cells if not cell.predator]
-    list_predator_age = [cell.age for cell in list_cells if cell.predator]
+    list_victim_age = [cell.age for cell in list_victim]
+    list_predator_age = [cell.age for cell in list_predator]
 
-    list_victim_engine = [cell.engines for cell in list_cells if not cell.predator]
-    list_predator_engine = [cell.engines for cell in list_cells if cell.predator]
+    list_victim_engine = [cell.engines for cell in list_victim]
+    list_predator_engine = [cell.engines for cell in list_predator]
 
-    list_victim_satiety = [cell.satiety * 100 for cell in list_cells if not cell.predator]
-    list_predator_satiety = [cell.satiety * 100 for cell in list_cells if cell.predator]
+    list_victim_satiety = [cell.satiety * 100 for cell in list_victim]
+    list_predator_satiety = [cell.satiety * 100 for cell in list_predator]
 
-    if len(list_victim) > 0 and len(list_predator) > 0:
+    number_of_victims = len(list_victim)
+    number_of_predators = len(list_predator)
+
+    victim_average_age = (sum(list_victim_age) / number_of_victims
+                          if number_of_victims > 0 else 0)
+    predator_average_age = (sum(list_predator_age) / number_of_predators
+                          if number_of_predators > 0 else 0)
+
+    victim_average_engines = (sum(list_victim_engine) / number_of_victims
+                              if number_of_victims > 0 else 0)
+    predator_average_engines = (sum(list_predator_engine) / number_of_predators
+                                if number_of_predators > 0 else 0)
+
+    victim_average_satiety = (sum(list_victim_satiety) / number_of_victims
+                              if number_of_victims > 0 else 0)
+    predator_average_satiety = (sum(list_predator_satiety) / number_of_predators
+                                if number_of_predators > 0 else 0)
+
+    time_in_file = read_data('data.txt')[0]
+    last_time_in_file = 0
+    if len(time_in_file) > 0:
+        last_time_in_file = max(time_in_file)
+
+    if number_of_victims > 0 or number_of_predators > 0 or time > last_time_in_file:
         with open('data.txt', 'a') as file:
             cell_data = [str(time),
-                         str(len(list_victim)),
-                         str(len(list_predator)),
-                         str(sum(list_victim_age) / len(list_victim_age)),
-                         str(sum(list_predator_age) / len(list_predator_age)),
-                         str(sum(list_victim_engine) / len(list_victim_engine)),
-                         str(sum(list_predator_engine) / len(list_predator_engine)),
-                         str(sum(list_victim_satiety) / len(list_victim_satiety)),
-                         str(sum(list_predator_satiety) / len(list_predator_satiety)),
+                         str(number_of_victims),
+                         str(number_of_predators),
+                         str(victim_average_age),
+                         str(predator_average_age),
+                         str(victim_average_engines),
+                         str(predator_average_engines),
+                         str(victim_average_satiety),
+                         str(predator_average_satiety),
                          ]
             cell_data = ' '.join(cell_data)
             cell_data = cell_data + '\n'

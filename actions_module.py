@@ -52,7 +52,6 @@ def kill_the_cell(list_cell, cell, time):
 
     if cell in list_cell:
         list_cell.remove(cell)  # A cell removed from the list
-        write_data(list_cell, time)  # Writes data about a dead cell
 
 
 def born_the_cell(list_cell, cell, time):
@@ -64,7 +63,6 @@ def born_the_cell(list_cell, cell, time):
 
     """
     list_cell.append(cell)  # A cell added to the list
-    write_data(list_cell, time)  # Writes data about a new cell
 
 
 def multiply(list_cells, time, parameters):

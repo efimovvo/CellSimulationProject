@@ -79,11 +79,12 @@ def add_predator(position, cells, parameters):
         cells.append(new_cell)
 
 
-def find_button(position, buttons):
+def find_button(position, buttons, parameters):
     """ Function activates the button if it is clicked.
 
         :param position : list : position of event
         :param buttons : list(Button) : list of cells
+        :param parameters : list(UserPanelParameter) : user parameters
     """
     global time_step
 
@@ -461,6 +462,7 @@ def main():
                 meal_list.append(Meal())
             multiply(cell_list, time, user_parameter_set)
             update(cell_list, meal_list, time)
+            write_data(cell_list, time)
 
         # Draws meal on the screen
         draw_meal(meal_list, screen)
